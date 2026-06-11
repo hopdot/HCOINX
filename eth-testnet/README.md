@@ -1,58 +1,67 @@
 # HCOINX Ethereum Testnet + Mesh Simulator
 
-Local Hardhat testnet with UltrasonicOracle smart contract and a fully autonomous browser-based mesh node simulator.
+Local Hardhat testnet with UltrasonicOracle smart contract and a fully autonomous browser-based mesh node simulator with real-time WebSocket relay.
 
-## Quick Start
+## Quick Start (4 terminals)
 
-### 1. Install dependencies
+### Terminal 1 — Install & start Hardhat node
 ```bash
 cd eth-testnet
 npm install
-```
-
-### 2. Start the local Hardhat node (keep this terminal open)
-```bash
 npm run node
-# → Local RPC: http://127.0.0.1:8545
+# → RPC: http://127.0.0.1:8545
 # → 20 pre-funded test accounts
 ```
 
-### 3. Deploy UltrasonicOracle (new terminal)
+### Terminal 2 — Deploy UltrasonicOracle
 ```bash
 npm run deploy
-# → Logs the contract address
+# → Logs contract address
 # → Saves to simulator/contract_address.txt
 ```
 
-### 4. Open the browser simulator
-Open `simulator/index.html` in multiple browser tabs.
+### Terminal 3 — Start WebSocket relay
+```bash
+npm run relay
+# → ws://localhost:8080
+```
 
-- Paste the contract address from step 3
-- Set a unique Node ID per tab (NODE1, NODE2, NODE3...)
-- Click **Connect Node**
-- Click **Start Auto-Broadcast**
+### Terminal 4 — Open simulator in 3+ browser tabs
+Open `simulator/index.html` in multiple tabs.
 
-Each node will:
-- Generate ultrasonic sensor readings every 10 seconds
-- Propagate with TTL-based mesh rebroadcasting
-- Automatically submit each packet to the local Hardhat chain
-- Display live on-chain confirmation with TX hash
+Per tab:
+- Set a unique Node ID (NODE1, NODE2, NODE3...)
+- Paste the contract address
+- Click **Connect Node** (connects both Ethereum + WebSocket relay)
+- Click **Auto-Broadcast**
+
+## What happens
+- Each node generates ultrasonic sensor readings every 10 seconds
+- Packets propagate across tabs via WebSocket relay with TTL rebroadcasting
+- Every received packet is auto-submitted to the local Hardhat chain
+- On-chain NewData events fire and appear in all connected tabs
+- Duplicate packets are deduplicated per node
 
 ## Architecture
 
 ```
-Browser Tab (NODE1)          Browser Tab (NODE2)
-  ↓ sensor reading             ↓ sensor reading
-  ↓ mesh propagation ←→ rebroadcast with TTL
-  ↓
-  submitPacket() → Hardhat Node (localhost:8545)
-                       ↓
-                 UltrasonicOracle.sol
-                 emit NewData event
+  NODE1 tab          NODE2 tab          NODE3 tab
+     |                   |                   |
+     +------WebSocket Relay (ws://8080)------+
+     |          (server.mjs)                 |
+     |                                       |
+     +------------ Hardhat Node -------------+
+                  (localhost:8545)
+                  UltrasonicOracle.sol
 ```
 
 ## Files
-- `contracts/UltrasonicOracle.sol` — on-chain data storage
-- `scripts/deploy.js` — Hardhat deploy script
-- `hardhat.config.js` — Hardhat config (Solidity 0.8.20, localhost network)
-- `simulator/index.html` — autonomous multi-node mesh + Ethereum simulator
+```
+eth-testnet/
+  contracts/UltrasonicOracle.sol   Smart contract
+  scripts/deploy.js                Hardhat deploy script
+  relay/server.mjs                 WebSocket mesh relay (Node.js)
+  simulator/index.html             Browser multi-node simulator
+  hardhat.config.js                Hardhat config (Solidity 0.8.20)
+  package.json                     Dependencies + scripts
+```
