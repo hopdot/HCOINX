@@ -1,17 +1,20 @@
 {
   "name": "hcoinx-eth-testnet",
-  "version": "1.0.0",
-  "description": "Local Hardhat testnet + UltrasonicOracle for HCOINX mesh simulator",
+  "version": "1.1.0",
+  "description": "Local Hardhat testnet + UltrasonicOracle + WebSocket mesh relay for HCOINX",
+  "type": "module",
   "scripts": {
     "node": "npx hardhat node",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
-    "compile": "npx hardhat compile"
+    "compile": "npx hardhat compile",
+    "relay": "node relay/server.mjs"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.22.0"
   },
   "dependencies": {
-    "ethers": "^6.7.0"
+    "ethers": "^6.7.0",
+    "ws": "^8.16.0"
   }
 }
