@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HCOINX Mesh Node Simulator</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 20px; }
+    h2 { color: #58a6ff; }
+    #log { background: #161b22; border: 1px solid #30363d; padding: 12px; height: 380px;
+           overflow-y: auto; font-size: 13px; border-radius: 6px; }
+    .ok  { color: #3fb950; }
+    .err { color: #f85149; }
+    .info{ color: #d29922; }
+    button { background: #238636; color: #fff; border: none; padding: 8px 18px;
+             border-radius: 6px; cursor: pointer; margin: 4px; font-size: 14px; }
+    button:hover { background: #2ea043; }
+    input { background: #161b22; color: #c9d1d9; border: 1px solid #30363d;
+            padding: 6px 10px; border-radius: 6px; width: 340px; }
+    label { color: #8b949e; font-size: 13px; }
+    .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+             padding: 16px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <h2>⚡ HCOINX Mesh Node Simulator</h2>
+
+  <div class="panel">
+    <label>Contract Address:</label><br/>
+    <input id="contractAddr" placeholder="0x... (paste after deploy)" /><br/><br/>
+    <label>Node ID:</label>
+    <input id="nodeID" value="NODE1" style="width:100px;" />
+    &nbsp;
+    <label>RPC:</label>
+    <input id="rpcUrl" value="http://127.0.0.1:8545" style="width:200px;" />
+    <br/><br/>
+    <button onclick="initNode()">🔌 Connect Node</button>
+    <button onclick="startAuto()">▶️ Start Auto-Broadcast (10s)</button>
+    <button onclick="stopAuto()">⏹ Stop</button>
+    <button onclick="clearLog()">🗑 Clear Log</button>
+  </div>
+
+  <div id="log"></div>
+
+  <script>
+    const CONTRACT_ABI = [
+      {
+        "inputs": [
+          {"internalType":"uint32","name":"packetID","type":"uint32"},
+          {"internalType":"string","name":"deviceID","type":"string"},
+          {"internalType":"string","name":"payload","type":"string"}
+        ],
+        "name": "submitPacket",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {"indexed":false,"internalType":"uint32","name":"packetID","type":"uint32"},
+          {"indexed":false,"internalType":"string","name":"deviceID","type":"string"},
+          {"indexed":false,"internalType":"string","name":"payload","type":"string"}
+        ],
+        "name": "NewData",
+        "type": "event"
+      }
+    ];
+
+    let provider, signer, oracle;
+    let seenPackets = new Set();
+    let autoTimer = null;
+    let packetCounter = 1;
+
+    function log(msg, type = "info") {
+      const el = document.getElementById("log");
+      const ts = new Date().toLocaleTimeString();
+      el.innerHTML += `<div class="${type}">[${ts}] ${msg}</div>`;
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById("log").innerHTML = "";
+    }
+
+    async function initNode() {
+      const rpc = document.getElementById("rpcUrl").value;
+      const addr = document.getElementById("contractAddr").value;
+      if (!addr) { log("Paste a contract address first.", "err"); return; }
+
+      try {
+        provider = new ethers.providers.JsonRpcProvider(rpc);
+        signer = provider.getSigner(0);
+        oracle = new ethers.Contract(addr, CONTRACT_ABI, signer);
+        const nodeID = document.getElementById("nodeID").value;
+        log(`Node ${nodeID} connected to ${rpc}`, "ok");
+        log(`Oracle contract: ${addr}`, "ok");
+
+        // Listen for on-chain events
+        oracle.on("NewData", (packetID, deviceID, payload) => {
+          log(`📡 On-chain event: Packet #${packetID} from ${deviceID} | ${payload}`, "info");
+        });
+      } catch(e) {
+        log(`Connection failed: ${e.message}`, "err");
+      }
+    }
+
+    async function submitToEthereum(packet) {
+      try {
+        log(`Submitting Packet #${packet.packetID} to Ethereum...`, "info");
+        const tx = await oracle.submitPacket(packet.packetID, packet.senderID, packet.payload);
+        await tx.wait();
+        log(`✅ Packet #${packet.packetID} confirmed | TX: ${tx.hash.slice(0,18)}...`, "ok");
+      } catch(e) {
+        log(`❌ Submit failed for #${packet.packetID}: ${e.message}`, "err");
+      }
+    }
+
+    async function processMeshPacket(packet) {
+      if (seenPackets.has(packet.packetID)) {
+        log(`⚠️ Duplicate packet #${packet.packetID} ignored`, "info");
+        return;
+      }
+      seenPackets.add(packet.packetID);
+
+      const nodeID = document.getElementById("nodeID").value;
+      log(`📶 Received from ${packet.senderID}: "${packet.payload}" (TTL=${packet.TTL})`, "info");
+
+      if (packet.TTL > 1) {
+        packet.TTL--;
+        log(`🔁 Rebroadcasting with TTL=${packet.TTL}`, "info");
+      }
+
+      await submitToEthereum(packet);
+    }
+
+    function generateSensorReading() {
+      const nodeID = document.getElementById("nodeID").value;
+      const distance = (Math.random() * 400 + 10).toFixed(1);
+      const temp = (Math.random() * 15 + 20).toFixed(1);
+      return {
+        packetID: packetCounter++,
+        senderID: nodeID,
+        payload: `dist:${distance}cm,temp:${temp}C`,
+        TTL: 3
+      };
+    }
+
+    async function broadcastOnce() {
+      if (!oracle) { log("Connect node first.", "err"); return; }
+      const packet = generateSensorReading();
+      log(`📡 Broadcasting sensor reading: ${packet.payload}`, "info");
+      await processMeshPacket(packet);
+    }
+
+    function startAuto() {
+      if (!oracle) { log("Connect node first.", "err"); return; }
+      if (autoTimer) { log("Already running.", "info"); return; }
+      log("▶️ Auto-broadcast started (every 10s)", "ok");
+      broadcastOnce();
+      autoTimer = setInterval(broadcastOnce, 10000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        log("⏹ Auto-broadcast stopped.", "info");
+      }
+    }
+  </script>
+</body>
+</html>
