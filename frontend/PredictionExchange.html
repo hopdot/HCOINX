@@ -13,190 +13,169 @@
   --text:#e2e8f0;--muted:#94a3b8;--dim:#475569;
 }
 body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--text);min-height:100vh;}
-
-/* ── Nav ── */
-nav{background:rgba(15,23,42,0.95);border-bottom:1px solid var(--border);
-    padding:14px 40px;display:flex;align-items:center;justify-content:space-between;
-    position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+nav{background:rgba(15,23,42,0.95);border-bottom:1px solid var(--border);padding:14px 40px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
 .logo{font-size:20px;font-weight:800;color:var(--sky);letter-spacing:1px;}
 .logo span{color:#fff;}
-.nav-right{display:flex;align-items:center;gap:14px;}
-#walletBtn{background:var(--sky);color:#000;border:none;padding:9px 20px;
-           border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+#walletBtn{background:var(--sky);color:#000;border:none;padding:9px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;}
 #walletBtn:hover{background:#7dd3fc;}
-#walletAddr{font-size:12px;color:var(--muted);background:var(--surface2);
-            padding:6px 12px;border-radius:8px;font-family:monospace;}
-.net-badge{background:#134e4a;color:#34d399;font-size:11px;padding:4px 10px;
-           border-radius:20px;font-weight:600;}
+#walletAddr{font-size:12px;color:var(--muted);background:var(--surface2);padding:6px 12px;border-radius:8px;font-family:monospace;display:none;}
+.net-badge{background:#134e4a;color:#34d399;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;}
+.chain-badge{background:#1e1b4b;color:#a5b4fc;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;display:none;}
 
-/* ── Hero ── */
-.hero{text-align:center;padding:60px 20px 40px;background:radial-gradient(ellipse at 50% 0%,#0c2a4a 0%,transparent 70%);}
-.hero h1{font-size:52px;font-weight:900;line-height:1.1;margin-bottom:16px;}
+.hero{text-align:center;padding:56px 20px 36px;background:radial-gradient(ellipse at 50% 0%,#0c2a4a 0%,transparent 70%);}
+.hero h1{font-size:50px;font-weight:900;line-height:1.1;margin-bottom:14px;}
 .hero h1 span{color:var(--sky);}
-.hero p{color:var(--muted);font-size:17px;max-width:520px;margin:0 auto 28px;}
+.hero p{color:var(--muted);font-size:16px;max-width:500px;margin:0 auto 26px;}
 .hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
-.hstat{text-align:center;}
-.hstat-val{font-size:28px;font-weight:800;color:var(--sky);}
+.hstat-val{font-size:26px;font-weight:800;color:var(--sky);}
 .hstat-label{font-size:12px;color:var(--muted);margin-top:2px;}
 
-/* ── Layout ── */
-.container{max-width:1300px;margin:0 auto;padding:32px 24px;}
-.grid-main{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
-.grid-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
+.container{max-width:1300px;margin:0 auto;padding:28px 20px;}
+.grid-main{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px;}
+.grid-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;}
+.card h2{font-size:17px;font-weight:700;margin-bottom:18px;}
 
-/* ── Cards ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;}
-.card h2{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--text);}
-.card h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;}
-
-/* ── Form elements ── */
-.field{margin-bottom:14px;}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
-input,select{width:100%;padding:13px 16px;background:var(--surface2);border:1px solid var(--border);
-             border-radius:10px;color:var(--text);font-size:15px;outline:none;transition:border .2s;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+input,select{width:100%;padding:12px 15px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;transition:border .2s;}
 input:focus,select:focus{border-color:var(--sky);}
 select option{background:var(--surface2);}
 
-.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:16px;
-     font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px;}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px;}
 .btn-sky{background:var(--sky);color:#000;} .btn-sky:hover{background:#7dd3fc;transform:translateY(-1px);}
 .btn-green{background:var(--green);color:#000;} .btn-green:hover{background:#4ade80;}
 .btn-red{background:var(--red);color:#fff;} .btn-red:hover{background:#f87171;}
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
 .btn-outline:hover{border-color:var(--sky);color:var(--sky);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none !important;}
 
-/* ── Output / result ── */
-#predictionBox{background:var(--surface2);border-radius:14px;padding:20px;min-height:100px;
-               border:1px solid var(--border);margin-bottom:16px;}
+#predictionBox{background:var(--surface2);border-radius:14px;padding:18px;min-height:100px;border:1px solid var(--border);margin-bottom:14px;}
 #predictionBox.loaded{border-color:var(--sky);}
-.pred-event{font-size:22px;font-weight:800;color:var(--sky);margin-bottom:4px;}
-.pred-loc{font-size:13px;color:var(--muted);margin-bottom:12px;}
-.pred-bar-wrap{background:#0f172a;border-radius:8px;height:10px;overflow:hidden;margin:6px 0;}
+.pred-event{font-size:20px;font-weight:800;color:var(--sky);margin-bottom:3px;}
+.pred-loc{font-size:12px;color:var(--muted);margin-bottom:11px;}
+.pred-bar-wrap{background:#0f172a;border-radius:8px;height:9px;overflow:hidden;margin:5px 0;}
 .pred-bar{height:100%;border-radius:8px;transition:width .8s ease;}
-.pred-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);}
-.conf-number{font-size:48px;font-weight:900;margin:8px 0;}
+.pred-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.conf-number{font-size:44px;font-weight:900;margin:6px 0;}
 .conf-number.high{color:var(--red);} .conf-number.med{color:var(--yellow);} .conf-number.low{color:var(--green);}
-.risk-chip{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
-.risk-high{background:#450a0a;color:var(--red);}
-.risk-med{background:#422006;color:var(--yellow);}
-.risk-low{background:#052e16;color:var(--green);}
+.risk-chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.risk-high{background:#450a0a;color:var(--red);} .risk-med{background:#422006;color:var(--yellow);} .risk-low{background:#052e16;color:var(--green);}
 
-/* ── Market feed ── */
-#marketFeed{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
-.feed-item{background:var(--surface2);border-radius:10px;padding:12px 16px;
-           display:flex;align-items:center;justify-content:space-between;border:1px solid transparent;}
-.feed-item.bull{border-color:#14532d;} .feed-item.bear{border-color:#450a0a;}
-.fi-left{display:flex;flex-direction:column;gap:2px;}
-.fi-event{font-size:14px;font-weight:600;}
-.fi-loc{font-size:11px;color:var(--muted);}
-.fi-right{text-align:right;}
-.fi-conf{font-size:18px;font-weight:800;}
-.fi-stake{font-size:11px;color:var(--muted);}
-.fi-time{font-size:10px;color:var(--dim);}
-
-/* ── Positions ── */
-#positions{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
-.pos-item{background:var(--surface2);border-radius:10px;padding:12px 16px;
-          display:grid;grid-template-columns:1fr auto;gap:6px;border-left:3px solid var(--sky);}
-.pos-event{font-size:13px;font-weight:700;}
-.pos-loc{font-size:11px;color:var(--muted);}
-.pos-stake{font-size:14px;font-weight:800;color:var(--sky);}
-.pos-status{font-size:11px;}
-.pos-open{color:var(--yellow);}
-.pos-won{color:var(--green);}
-.pos-lost{color:var(--red);}
-.empty-state{color:var(--dim);font-size:13px;padding:16px 0;}
-
-/* ── Token balance ── */
-.balance-box{background:linear-gradient(135deg,#0c4a6e,#0f172a);border-radius:14px;
-             padding:20px;border:1px solid var(--border);margin-bottom:16px;}
-.bal-label{font-size:12px;color:var(--muted);margin-bottom:4px;}
-.bal-val{font-size:36px;font-weight:900;color:var(--sky);}
-.bal-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-.bal-row{display:flex;gap:12px;margin-top:12px;}
-.bal-mini{flex:1;background:var(--surface2);border-radius:10px;padding:10px 14px;}
-.bm-val{font-size:18px;font-weight:700;}
-.bm-label{font-size:11px;color:var(--muted);}
-
-/* ── AI model badge ── */
-.model-badge{display:flex;align-items:center;gap:10px;background:var(--surface2);
-             border-radius:10px;padding:12px 16px;margin-bottom:14px;border:1px solid var(--border);}
-.model-dot{width:10px;height:10px;border-radius:50%;background:var(--green);
-           box-shadow:0 0 8px var(--green);flex-shrink:0;}
-.model-info{flex:1;}
+.model-badge{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:10px;padding:11px 14px;margin-bottom:13px;border:1px solid var(--border);}
+.model-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);flex-shrink:0;}
 .model-name{font-size:13px;font-weight:700;}
-.model-meta{font-size:11px;color:var(--muted);}
+.model-meta{font-size:10px;color:var(--muted);}
 .model-r2{font-size:13px;font-weight:800;color:var(--green);}
 
-/* ── Chart placeholder ── */
-.chart-area{background:var(--surface2);border-radius:12px;height:160px;
-            display:flex;align-items:center;justify-content:center;
-            color:var(--dim);font-size:13px;position:relative;overflow:hidden;}
-.chart-bars{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:4px;padding:0 12px;}
-.bar{flex:1;border-radius:4px 4px 0 0;transition:height .6s ease;}
+.balance-box{background:linear-gradient(135deg,#0c4a6e,#0f172a);border-radius:13px;padding:18px;border:1px solid var(--border);margin-bottom:14px;}
+.bal-label{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.bal-val{font-size:32px;font-weight:900;color:var(--sky);}
+.bal-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.bal-row{display:flex;gap:10px;margin-top:11px;}
+.bal-mini{flex:1;background:var(--surface2);border-radius:9px;padding:9px 12px;}
+.bm-val{font-size:16px;font-weight:700;}
+.bm-label{font-size:10px;color:var(--muted);}
 
-/* ── Toast ── */
-#toast{position:fixed;bottom:30px;right:30px;background:var(--surface);border:1px solid var(--border);
-       border-radius:12px;padding:14px 20px;font-size:14px;z-index:999;
-       transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px;}
+#marketFeed{max-height:270px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+.feed-item{background:var(--surface2);border-radius:9px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border:1px solid transparent;}
+.feed-item.bull{border-color:#14532d;} .feed-item.bear{border-color:#450a0a;}
+.fi-event{font-size:13px;font-weight:600;} .fi-loc{font-size:10px;color:var(--muted);} .fi-time{font-size:9px;color:var(--dim);}
+.fi-conf{font-size:17px;font-weight:800;} .fi-stake{font-size:10px;color:var(--muted);}
+
+#positions{max-height:230px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+.pos-item{background:var(--surface2);border-radius:9px;padding:11px 14px;display:grid;grid-template-columns:1fr auto;gap:5px;border-left:3px solid var(--sky);}
+.pos-event{font-size:13px;font-weight:700;} .pos-loc{font-size:10px;color:var(--muted);}
+.pos-stake{font-size:13px;font-weight:800;color:var(--sky);}
+.pos-open{color:var(--yellow);font-size:10px;} .pos-won{color:var(--green);font-size:10px;} .pos-lost{color:var(--red);font-size:10px;}
+.empty-state{color:var(--dim);font-size:13px;padding:14px 0;}
+
+/* On-chain status banner */
+#chainBanner{background:#0c1a2e;border:1px solid var(--border);border-radius:12px;padding:12px 18px;
+             margin-bottom:18px;display:flex;align-items:center;gap:10px;font-size:13px;}
+.cb-dot{width:9px;height:9px;border-radius:50%;background:var(--dim);flex-shrink:0;}
+.cb-dot.live{background:var(--green);box-shadow:0 0 7px var(--green);}
+#cbText{color:var(--muted);}
+
+/* Market selector */
+#marketSelector{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.ms-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:7px;}
+#marketSelect{width:100%;padding:10px 13px;background:#0d1117;border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;}
+
+/* Tx log */
+#txLog{max-height:130px;overflow-y:auto;font-size:11px;font-family:monospace;}
+.tx-row{padding:4px 0;border-bottom:1px solid var(--border);color:var(--muted);}
+.tx-row a{color:var(--sky);text-decoration:none;} .tx-row a:hover{text-decoration:underline;}
+.tx-ok{color:var(--green);} .tx-err{color:var(--red);}
+
+#toast{position:fixed;bottom:28px;right:28px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 18px;font-size:13px;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px;}
 #toast.show{transform:translateY(0);opacity:1;}
 #toast.ok{border-color:var(--green);color:var(--green);}
 #toast.err{border-color:var(--red);color:var(--red);}
 #toast.info{border-color:var(--sky);color:var(--sky);}
 
-@media(max-width:900px){
-  .grid-main,.grid-bottom{grid-template-columns:1fr;}
-  .hero h1{font-size:34px;}
-}
+.chart-area{background:var(--surface2);border-radius:11px;height:140px;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:12px;position:relative;overflow:hidden;}
+.chart-bars{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:3px;padding:0 10px;}
+.bar{flex:1;border-radius:3px 3px 0 0;}
+
+@media(max-width:960px){.grid-main,.grid-bottom{grid-template-columns:1fr;}.hero h1{font-size:32px;}}
 </style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
   <div class="logo">HCX<span>INEX</span></div>
   <div class="nav-right">
-    <span class="net-badge">⬡ Polygon</span>
-    <span id="walletAddr" style="display:none"></span>
+    <span class="net-badge" id="netBadge">⬡ Polygon</span>
+    <span class="chain-badge" id="chainBadge"></span>
+    <span id="walletAddr"></span>
     <button id="walletBtn" onclick="connectWallet()">Connect Wallet</button>
   </div>
 </nav>
 
-<!-- Hero -->
 <div class="hero">
   <h1>🌦️ AI <span>Prediction</span> Exchange</h1>
-  <p>Stake HCX tokens on AI-powered weather event predictions. Earn rewards when the model is right.</p>
+  <p>Stake HCX tokens on AI-powered weather predictions. Earn rewards when you're right.</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-val" id="tvl">$0</div><div class="hstat-label">Total Value Locked</div></div>
     <div class="hstat"><div class="hstat-val" id="totalPreds">0</div><div class="hstat-label">Predictions Made</div></div>
-    <div class="hstat"><div class="hstat-val" id="accuracy">—</div><div class="hstat-label">Model Accuracy</div></div>
+    <div class="hstat"><div class="hstat-val" id="accuracy">92.6%</div><div class="hstat-label">Model Accuracy</div></div>
     <div class="hstat"><div class="hstat-val" id="activeMkts">0</div><div class="hstat-label">Active Markets</div></div>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- Row 1: Predict + Output -->
+  <!-- On-chain status banner -->
+  <div id="chainBanner">
+    <div class="cb-dot" id="cbDot"></div>
+    <span id="cbText">Connect wallet to enable on-chain staking</span>
+  </div>
+
   <div class="grid-main">
 
-    <!-- Prediction Form -->
+    <!-- Left: Prediction form -->
     <div class="card">
       <h2>🎯 Make a Prediction</h2>
-
       <div class="model-badge">
         <div class="model-dot"></div>
         <div class="model-info">
           <div class="model-name">HCOINX Weather AI v2.4</div>
-          <div class="model-meta">Linear regression · 500 training routes · Updated daily</div>
+          <div class="model-meta">Linear regression · 500 training routes · Daily retrain</div>
         </div>
         <div class="model-r2">R² 0.926</div>
       </div>
 
-      <div class="field">
-        <label>Location</label>
-        <input id="location" placeholder="e.g. Chicago, IL"/>
+      <div id="marketSelector">
+        <div class="ms-label">Select On-Chain Market</div>
+        <select id="marketSelect" onchange="onMarketSelect()">
+          <option value="0">— Run AI prediction to create a new market —</option>
+        </select>
       </div>
 
+      <div class="field"><label>Location</label><input id="location" placeholder="e.g. Chicago, IL"/></div>
       <div class="field">
         <label>Event Type</label>
         <select id="eventType">
@@ -208,7 +187,6 @@ select option{background:var(--surface2);}
           <option value="Drought">☀️ Drought</option>
         </select>
       </div>
-
       <div class="field">
         <label>Timeframe</label>
         <select id="timeframe">
@@ -218,42 +196,33 @@ select option{background:var(--surface2);}
           <option value="30d">Next 30 days</option>
         </select>
       </div>
-
-      <div class="field">
-        <label>Stake Amount (HCX)</label>
-        <input id="stake" type="number" placeholder="e.g. 100" min="1"/>
-      </div>
+      <div class="field"><label>Stake Amount (HCX)</label><input id="stake" type="number" placeholder="e.g. 100" min="1"/></div>
 
       <button class="btn btn-sky" onclick="runPrediction()">⚡ Run AI Prediction</button>
       <button class="btn btn-outline" onclick="clearPrediction()" style="margin-top:8px;">Clear</button>
     </div>
 
-    <!-- Output -->
+    <!-- Right: Output -->
     <div class="card">
       <h2>📊 Market Output</h2>
-
       <div id="predictionBox">
-        <div style="color:var(--dim);font-size:14px;padding:20px 0;text-align:center;">
-          ⚡ Run a prediction to see results
-        </div>
+        <div style="color:var(--dim);font-size:13px;padding:18px 0;text-align:center;">⚡ Run a prediction to see results</div>
       </div>
-
       <div style="display:flex;gap:10px;margin-top:4px;">
-        <button class="btn btn-green" id="stakeYesBtn" onclick="placeStake('YES')" disabled style="opacity:.4;">
-          ✅ Stake YES
-        </button>
-        <button class="btn btn-red" id="stakeNoBtn" onclick="placeStake('NO')" disabled style="opacity:.4;">
-          ❌ Stake NO
-        </button>
+        <button class="btn btn-green" id="stakeYesBtn" onclick="placeStake('YES')" disabled>✅ Stake YES</button>
+        <button class="btn btn-red"   id="stakeNoBtn"  onclick="placeStake('NO')"  disabled>❌ Stake NO</button>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:7px;">Transaction Log</div>
+        <div id="txLog"><div class="empty-state">No transactions yet.</div></div>
       </div>
     </div>
 
   </div>
 
-  <!-- Row 2: Balance + Feed + Positions -->
   <div class="grid-bottom">
 
-    <!-- Wallet & Balance -->
+    <!-- Account -->
     <div class="card">
       <h2>💎 My Account</h2>
       <div class="balance-box">
@@ -261,308 +230,475 @@ select option{background:var(--surface2);}
         <div class="bal-val" id="hcxBalance">—</div>
         <div class="bal-sub">≈ <span id="hcxUsd">—</span> USD</div>
         <div class="bal-row">
-          <div class="bal-mini">
-            <div class="bm-val" id="stakedBal">0</div>
-            <div class="bm-label">Staked</div>
-          </div>
-          <div class="bal-mini">
-            <div class="bm-val" id="earnedBal" style="color:var(--green)">0</div>
-            <div class="bm-label">Earned</div>
-          </div>
-          <div class="bal-mini">
-            <div class="bm-val" id="posCount">0</div>
-            <div class="bm-label">Positions</div>
-          </div>
+          <div class="bal-mini"><div class="bm-val" id="stakedBal">0</div><div class="bm-label">Staked</div></div>
+          <div class="bal-mini"><div class="bm-val" id="earnedBal" style="color:var(--green)">0</div><div class="bm-label">Earned</div></div>
+          <div class="bal-mini"><div class="bm-val" id="posCount">0</div><div class="bm-label">Positions</div></div>
         </div>
       </div>
       <div class="chart-area">
         <div class="chart-bars" id="chartBars"></div>
-        <span style="position:relative;z-index:1;color:var(--dim);font-size:12px;" id="chartLabel">Portfolio history</span>
+        <span style="position:relative;z-index:1;color:var(--dim);font-size:11px;" id="chartLabel">Connect wallet to see portfolio</span>
       </div>
     </div>
 
-    <!-- Live Market Feed -->
+    <!-- Live Feed -->
     <div class="card">
       <h2>📡 Live Market Feed</h2>
-      <div id="marketFeed">
-        <div class="empty-state">Waiting for market activity...</div>
-      </div>
+      <div id="marketFeed"><div class="empty-state">Waiting for market activity...</div></div>
     </div>
 
-    <!-- My Positions -->
+    <!-- Positions -->
     <div class="card">
       <h2>📋 My Positions</h2>
-      <div id="positions">
-        <div class="empty-state">No open positions yet.</div>
-      </div>
+      <div id="positions"><div class="empty-state">No open positions yet.</div></div>
+      <button class="btn btn-outline" onclick="claimRewards()" id="claimBtn" style="margin-top:12px;opacity:.4;" disabled>🏆 Claim Rewards</button>
     </div>
 
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
-// ── State ────────────────────────────────────────────────────────
-let walletAddress = null;
-let provider, signer;
-let positions = [];
-let lastPrediction = null;
-let globalStats = { tvl: 0, preds: 0, markets: 0 };
-let hcxPrice = 0.042;
+// ── Contract config — update after deploy ────────────────────────
+const CONFIG = {
+  HCXX_TOKEN:        "0x0000000000000000000000000000000000000000", // SET AFTER DEPLOY
+  PREDICTION_MARKET: "0x0000000000000000000000000000000000000000", // SET AFTER DEPLOY
+  POLYGON_RPC:       "https://polygon-rpc.com",
+  CHAIN_ID:          137,
+  HCX_PRICE_USD:     0.042
+};
 
-// Simulated market feed data
+// ABIs
+const ERC20_ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function decimals() view returns (uint8)"
+];
+
+const MARKET_ABI = [
+  "function marketCount() view returns (uint256)",
+  "function markets(uint256) view returns (uint256,string,string,string,uint8,uint256,uint256,uint256,uint8,uint8)",
+  "function stake(uint256 marketId, uint8 side, uint256 amount)",
+  "function claimReward(uint256 marketId)",
+  "function getPosition(address user, uint256 marketId) view returns (uint256,uint8,uint256,bool)",
+  "function createMarket(string,string,string,uint8,uint256) returns (uint256)",
+  "event Staked(uint256 indexed marketId, address indexed user, uint8 side, uint256 amount)",
+  "event MarketResolved(uint256 indexed marketId, uint8 outcome)",
+  "event RewardClaimed(uint256 indexed marketId, address indexed user, uint256 reward)"
+];
+
+// ── State ────────────────────────────────────────────────────────
+let provider, signer, hcxContract, marketContract;
+let walletAddress = null;
+let lastPrediction = null;
+let positions = [];
+let onChainMode = false;
+let globalStats = { tvl: 0, preds: 0, markets: 0 };
 const FEED_EVENTS = ["Storm","Flood","Heatwave","Blizzard","Tornado","Drought"];
 const CITIES = ["Chicago","Miami","Houston","Phoenix","Seattle","Denver","Boston","Dallas","Atlanta","NYC"];
 
 // ── Toast ────────────────────────────────────────────────────────
-function toast(msg, type="info", duration=3500){
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.className = `show ${type}`;
-  setTimeout(()=>{ el.className=""; }, duration);
+function toast(msg, type="info", dur=3500){
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.className=`show ${type}`;
+  setTimeout(()=>{el.className="";},dur);
 }
 
-// ── Wallet ───────────────────────────────────────────────────────
+// ── Chain banner ─────────────────────────────────────────────────
+function setBanner(msg, live=false){
+  document.getElementById("cbText").textContent = msg;
+  document.getElementById("cbDot").className = "cb-dot" + (live?" live":"");
+}
+
+// ── Wallet connect ────────────────────────────────────────────────
 async function connectWallet(){
   if(typeof window.ethereum === "undefined"){
-    toast("MetaMask not detected. Please install it.", "err"); return;
+    toast("MetaMask not detected.", "err"); return;
   }
   try {
     provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
+    await provider.send("eth_requestAccounts",[]);
     signer = provider.getSigner();
     walletAddress = await signer.getAddress();
+
     const short = walletAddress.slice(0,6)+"..."+walletAddress.slice(-4);
     document.getElementById("walletAddr").textContent = short;
     document.getElementById("walletAddr").style.display = "block";
-    document.getElementById("walletBtn").textContent = "✅ Connected";
+    document.getElementById("walletBtn").textContent = "✅ " + short;
     document.getElementById("walletBtn").style.background = "#14532d";
     document.getElementById("walletBtn").style.color = "#4ade80";
 
-    // Mock balance
-    const mockBal = (Math.random()*9000+1000).toFixed(0);
-    document.getElementById("hcxBalance").textContent = Number(mockBal).toLocaleString() + " HCX";
-    document.getElementById("hcxUsd").textContent = "$" + (mockBal * hcxPrice).toFixed(2);
-    toast("Wallet connected: " + short, "ok");
-    renderChart();
+    const network = await provider.getNetwork();
+    document.getElementById("chainBadge").textContent = `Chain ${network.chainId}`;
+    document.getElementById("chainBadge").style.display = "block";
+
+    await loadContracts();
+    toast("Wallet connected: "+short,"ok");
+  } catch(e){ toast("Connection rejected.","err"); }
+}
+
+async function loadContracts(){
+  const isDeployed = CONFIG.PREDICTION_MARKET !== "0x0000000000000000000000000000000000000000";
+  if(!isDeployed){
+    setBanner("⚠️ Contracts not deployed yet — using simulation mode. Deploy with: npx hardhat run scripts/deployPredictionMarket.js");
+    await loadMockBalance();
+    return;
+  }
+  try {
+    hcxContract    = new ethers.Contract(CONFIG.HCXX_TOKEN, ERC20_ABI, signer);
+    marketContract = new ethers.Contract(CONFIG.PREDICTION_MARKET, MARKET_ABI, signer);
+    onChainMode    = true;
+    setBanner("🟢 On-chain mode — PredictionMarket contract connected", true);
+    await refreshBalance();
+    await loadOnChainMarkets();
+    listenToEvents();
+    document.getElementById("claimBtn").disabled = false;
+    document.getElementById("claimBtn").style.opacity = "1";
   } catch(e){
-    toast("Connection rejected.", "err");
+    setBanner("⚠️ Contract load failed — simulation mode active");
+    await loadMockBalance();
   }
 }
 
-// ── AI Prediction Engine ──────────────────────────────────────────
-function aiPredict(location, eventType, timeframe){
-  // Simulate AI model output
-  const seed = (location+eventType+timeframe).split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-  const rng = (s) => { let x=Math.sin(s)*10000; return x-Math.floor(x); };
-
-  const base = rng(seed);
-  const tfMod = {  "24h":1.1, "48h":1.0, "7d":0.85, "30d":0.7 }[timeframe] || 1;
-  const evMod = { "Storm":0.7,"Flood":0.65,"Heatwave":0.75,"Blizzard":0.5,"Tornado":0.4,"Drought":0.8 }[eventType] || 0.6;
-
-  const confidence = Math.min(98, Math.max(12, Math.round(base * tfMod * evMod * 100)));
-  const factors = [
-    { label:"Historical frequency", val: rng(seed+1) },
-    { label:"Seasonal pattern",     val: rng(seed+2) },
-    { label:"Pressure anomaly",     val: rng(seed+3) },
-    { label:"Humidity index",       val: rng(seed+4) },
-  ];
-  return { confidence, factors, eventType, location, timeframe };
+async function loadMockBalance(){
+  const bal = (Math.random()*9000+1000).toFixed(0);
+  document.getElementById("hcxBalance").textContent = Number(bal).toLocaleString()+" HCX";
+  document.getElementById("hcxUsd").textContent = "$"+(bal*CONFIG.HCX_PRICE_USD).toFixed(2);
+  renderChart();
 }
 
-function runPrediction(){
+async function refreshBalance(){
+  if(!hcxContract||!walletAddress) return;
+  try {
+    const dec  = await hcxContract.decimals();
+    const raw  = await hcxContract.balanceOf(walletAddress);
+    const bal  = parseFloat(ethers.utils.formatUnits(raw, dec));
+    document.getElementById("hcxBalance").textContent = bal.toLocaleString()+" HCX";
+    document.getElementById("hcxUsd").textContent = "$"+(bal*CONFIG.HCX_PRICE_USD).toFixed(2);
+    renderChart();
+  } catch(e){ console.warn("Balance refresh failed:",e); }
+}
+
+// ── Load on-chain markets into dropdown ───────────────────────────
+async function loadOnChainMarkets(){
+  if(!marketContract) return;
+  try {
+    const count = (await marketContract.marketCount()).toNumber();
+    const sel = document.getElementById("marketSelect");
+    sel.innerHTML = `<option value="0">— Select an existing market —</option>`;
+    for(let i=1;i<=count;i++){
+      const m = await marketContract.markets(i);
+      // m: [id, eventType, location, timeframe, confidence, totalYes, totalNo, deadline, status, outcome]
+      const status = ["Open","Resolved","Cancelled"][m[8]];
+      if(m[8] === 0){ // Open only
+        sel.innerHTML += `<option value="${i}">#${i} ${m[1]} / ${m[2]} / ${m[3]} (${m[4]}% conf) — ${status}</option>`;
+        globalStats.markets++;
+      }
+    }
+    globalStats.preds = count;
+    updateHeroStats();
+  } catch(e){ console.warn("Market load failed:",e); }
+}
+
+function onMarketSelect(){
+  const id = parseInt(document.getElementById("marketSelect").value);
+  if(id>0) toast(`Market #${id} selected — enter stake and click YES or NO`,"info");
+}
+
+// ── Live event listeners ──────────────────────────────────────────
+function listenToEvents(){
+  if(!marketContract) return;
+  marketContract.on("Staked",(marketId, user, side, amount)=>{
+    const sideStr = side===0?"YES":"NO";
+    const amt = ethers.utils.formatUnits(amount,18);
+    addToFeed({confidence:50, eventType:"Stake", location:`Market #${marketId}`, timeframe:sideStr}, parseFloat(amt).toFixed(0));
+    globalStats.tvl += parseFloat(amt)*CONFIG.HCX_PRICE_USD;
+    updateHeroStats();
+  });
+  marketContract.on("MarketResolved",(marketId, outcome)=>{
+    toast(`🏁 Market #${marketId} resolved: ${outcome===0?"YES":"NO"} wins!`,"ok",6000);
+    loadOnChainMarkets();
+    renderPositions();
+  });
+  marketContract.on("RewardClaimed",(marketId,user,reward)=>{
+    const amt = parseFloat(ethers.utils.formatUnits(reward,18)).toFixed(0);
+    if(user.toLowerCase()===walletAddress?.toLowerCase()){
+      const earned = parseInt(document.getElementById("earnedBal").textContent.replace(/,/g,"")||0)+parseInt(amt);
+      document.getElementById("earnedBal").textContent = earned.toLocaleString();
+      toast(`🎉 Claimed ${amt} HCX reward from Market #${marketId}`,"ok",5000);
+      refreshBalance();
+    }
+  });
+}
+
+// ── AI prediction engine ──────────────────────────────────────────
+function aiPredict(location, eventType, timeframe){
+  const seed = (location+eventType+timeframe).split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rng = s=>{ let x=Math.sin(s)*10000; return x-Math.floor(x); };
+  const tfMod = {"24h":1.1,"48h":1.0,"7d":.85,"30d":.7}[timeframe]||1;
+  const evMod = {"Storm":.7,"Flood":.65,"Heatwave":.75,"Blizzard":.5,"Tornado":.4,"Drought":.8}[eventType]||.6;
+  const confidence = Math.min(98,Math.max(12,Math.round(rng(seed)*tfMod*evMod*100)));
+  const factors = [
+    {label:"Historical frequency", val:rng(seed+1)},
+    {label:"Seasonal pattern",     val:rng(seed+2)},
+    {label:"Pressure anomaly",     val:rng(seed+3)},
+    {label:"Humidity index",       val:rng(seed+4)},
+  ];
+  return {confidence, factors, eventType, location, timeframe};
+}
+
+async function runPrediction(){
   const location  = document.getElementById("location").value.trim();
   const eventType = document.getElementById("eventType").value;
   const timeframe = document.getElementById("timeframe").value;
-  const stake     = parseFloat(document.getElementById("stake").value);
-
-  if(!location){ toast("Enter a location.", "err"); return; }
+  const stake     = parseFloat(document.getElementById("stake").value)||0;
+  if(!location){toast("Enter a location.","err");return;}
 
   const pred = aiPredict(location, eventType, timeframe);
-  lastPrediction = { ...pred, stake };
+  lastPrediction = {...pred, stake};
 
-  // Render result
   const box = document.getElementById("predictionBox");
   box.className = "loaded";
-  const confClass = pred.confidence > 70 ? "high" : pred.confidence > 40 ? "med" : "low";
-  const riskClass = pred.confidence > 70 ? "risk-high" : pred.confidence > 40 ? "risk-med" : "risk-low";
-  const riskLabel = pred.confidence > 70 ? "HIGH RISK" : pred.confidence > 40 ? "MEDIUM" : "LOW RISK";
+  const cc = pred.confidence>70?"high":pred.confidence>40?"med":"low";
+  const rc = pred.confidence>70?"risk-high":pred.confidence>40?"risk-med":"risk-low";
+  const rl = pred.confidence>70?"HIGH RISK":pred.confidence>40?"MEDIUM":"LOW RISK";
+  const bc = pred.confidence>70?"#ef4444":pred.confidence>40?"#f59e0b":"#22c55e";
 
-  box.innerHTML = `
+  box.innerHTML=`
     <div class="pred-event">${eventType} · ${location}</div>
     <div class="pred-loc">${timeframe} window · HCOINX Weather AI v2.4</div>
-    <div style="margin:14px 0 4px;font-size:12px;color:var(--muted);">PROBABILITY</div>
-    <div class="conf-number ${confClass}">${pred.confidence}%</div>
-    <div class="pred-bar-wrap"><div class="pred-bar" style="width:${pred.confidence}%;background:${pred.confidence>70?"#ef4444":pred.confidence>40?"#f59e0b":"#22c55e"}"></div></div>
+    <div style="margin:12px 0 3px;font-size:11px;color:var(--muted);">PROBABILITY</div>
+    <div class="conf-number ${cc}">${pred.confidence}%</div>
+    <div class="pred-bar-wrap"><div class="pred-bar" style="width:${pred.confidence}%;background:${bc}"></div></div>
     <div class="pred-label"><span>0%</span><span>50%</span><span>100%</span></div>
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-      <span class="risk-chip ${riskClass}">${riskLabel}</span>
-      ${stake ? `<span class="risk-chip" style="background:#1e293b;color:var(--sky)">💰 ${stake} HCX staked</span>` : ""}
+    <div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;">
+      <span class="risk-chip ${rc}">${rl}</span>
+      ${stake?`<span class="risk-chip" style="background:#1e293b;color:var(--sky)">💰 ${stake} HCX</span>`:""}
+      ${onChainMode?`<span class="risk-chip" style="background:#1e3a5f;color:#7dd3fc">⛓ On-chain</span>`:`<span class="risk-chip" style="background:#1e293b;color:var(--muted)">Simulation</span>`}
     </div>
-    <div style="margin-top:14px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;">
-      <div style="font-weight:700;margin-bottom:6px;">AI FACTOR BREAKDOWN</div>
-      ${pred.factors.map(f=>`
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-          <span>${f.label}</span>
-          <span style="color:var(--text)">${(f.val*100).toFixed(0)}%</span>
-        </div>
-      `).join("")}
-    </div>
-  `;
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;">
+      <div style="font-weight:700;margin-bottom:5px;">AI FACTOR BREAKDOWN</div>
+      ${pred.factors.map(f=>`<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>${f.label}</span><span style="color:var(--text)">${(f.val*100).toFixed(0)}%</span></div>`).join("")}
+    </div>`;
 
-  // Enable stake buttons
-  ["stakeYesBtn","stakeNoBtn"].forEach(id=>{
-    const b = document.getElementById(id);
-    b.disabled = false;
-    b.style.opacity = "1";
-  });
+  document.getElementById("stakeYesBtn").disabled = false;
+  document.getElementById("stakeNoBtn").disabled  = false;
 
-  // Add to market feed
-  addToFeed(pred, stake || 0);
+  addToFeed(pred, stake);
   globalStats.preds++;
-  globalStats.markets = Math.min(globalStats.preds, 12);
   updateHeroStats();
-  toast(`Prediction ready: ${pred.confidence}% probability`, "info");
+
+  // If on-chain and owner: create market on-chain
+  if(onChainMode && marketContract){
+    try {
+      const dur = {"24h":86400,"48h":172800,"7d":604800,"30d":2592000}[timeframe]||172800;
+      const tx = await marketContract.createMarket(eventType, location, timeframe, pred.confidence, dur);
+      logTx("Creating market...", tx.hash);
+      await tx.wait();
+      logTx(`Market created: ${eventType}/${location}`, tx.hash, true);
+      await loadOnChainMarkets();
+    } catch(e){
+      // Non-owner can skip market creation, just stake into existing
+      toast("Non-owner: select an existing market above to stake.", "info");
+    }
+  }
+  toast(`Prediction: ${pred.confidence}% probability`,"info");
 }
 
 function clearPrediction(){
-  lastPrediction = null;
-  document.getElementById("predictionBox").className = "";
-  document.getElementById("predictionBox").innerHTML = `<div style="color:var(--dim);font-size:14px;padding:20px 0;text-align:center;">⚡ Run a prediction to see results</div>`;
-  ["stakeYesBtn","stakeNoBtn"].forEach(id=>{
-    const b = document.getElementById(id);
-    b.disabled = true; b.style.opacity = ".4";
-  });
+  lastPrediction=null;
+  document.getElementById("predictionBox").className="";
+  document.getElementById("predictionBox").innerHTML=`<div style="color:var(--dim);font-size:13px;padding:18px 0;text-align:center;">⚡ Run a prediction to see results</div>`;
+  document.getElementById("stakeYesBtn").disabled=true;
+  document.getElementById("stakeNoBtn").disabled=true;
 }
 
-// ── Stake ────────────────────────────────────────────────────────
-function placeStake(side){
-  if(!walletAddress){ toast("Connect wallet first.", "err"); return; }
-  if(!lastPrediction){ toast("Run a prediction first.", "err"); return; }
-  const stake = lastPrediction.stake || 0;
-  if(!stake || stake <= 0){ toast("Enter a stake amount.", "err"); return; }
+// ── Stake ─────────────────────────────────────────────────────────
+async function placeStake(sideStr){
+  if(!walletAddress){toast("Connect wallet first.","err");return;}
+  const stake = parseFloat(document.getElementById("stake").value)||0;
+  if(!stake||stake<=0){toast("Enter a stake amount.","err");return;}
 
+  if(onChainMode){
+    await placeOnChainStake(sideStr, stake);
+  } else {
+    placeSimStake(sideStr, stake);
+  }
+}
+
+async function placeOnChainStake(sideStr, stake){
+  const marketId = parseInt(document.getElementById("marketSelect").value)||0;
+  if(!marketId){toast("Select a market from the dropdown.","err");return;}
+
+  try {
+    const dec    = await hcxContract.decimals();
+    const amount = ethers.utils.parseUnits(stake.toString(), dec);
+
+    // Check/set allowance
+    const allowance = await hcxContract.allowance(walletAddress, CONFIG.PREDICTION_MARKET);
+    if(allowance.lt(amount)){
+      toast("Approving HCX spend...","info");
+      const appTx = await hcxContract.approve(CONFIG.PREDICTION_MARKET, amount);
+      logTx("Approving HCX...", appTx.hash);
+      await appTx.wait();
+      logTx("HCX approved", appTx.hash, true);
+    }
+
+    const side = sideStr==="YES" ? 0 : 1;
+    const tx   = await marketContract.stake(marketId, side, amount);
+    logTx(`Staking ${stake} HCX ${sideStr}...`, tx.hash);
+    toast(`Staking ${stake} HCX ${sideStr} on market #${marketId}...`,"info");
+    await tx.wait();
+    logTx(`✅ Staked ${stake} HCX ${sideStr}`, tx.hash, true);
+    toast(`✅ ${stake} HCX staked ${sideStr} on-chain!`,"ok");
+
+    addLocalPosition(marketId, sideStr, stake);
+    await refreshBalance();
+  } catch(e){
+    toast("Stake failed: "+e.message.slice(0,60),"err");
+    logTx("❌ Stake failed: "+e.message.slice(0,40), null, false, true);
+  }
+}
+
+function placeSimStake(sideStr, stake){
+  if(!lastPrediction){toast("Run a prediction first.","err");return;}
   const pos = {
-    id: Date.now(),
-    event: lastPrediction.eventType,
-    location: lastPrediction.location,
-    timeframe: lastPrediction.timeframe,
-    confidence: lastPrediction.confidence,
-    stake,
-    side,
-    status: "open",
-    ts: new Date()
+    id: Date.now(), marketId: 0,
+    event: lastPrediction.eventType, location: lastPrediction.location,
+    timeframe: lastPrediction.timeframe, confidence: lastPrediction.confidence,
+    stake, side: sideStr, status:"open", ts:new Date()
   };
   positions.unshift(pos);
-  globalStats.tvl += stake * hcxPrice;
-
-  const staked = positions.reduce((a,p)=>a+p.stake,0);
-  document.getElementById("stakedBal").textContent = staked.toLocaleString();
-  document.getElementById("posCount").textContent = positions.length;
-  updateHeroStats();
-  renderPositions();
-  toast(`✅ ${stake} HCX staked ${side} on ${pos.event} @ ${pos.location}`, "ok");
-
-  // Simulate resolve after delay
-  setTimeout(()=>resolvePosition(pos.id), 8000 + Math.random()*4000);
+  globalStats.tvl += stake*CONFIG.HCX_PRICE_USD;
+  const s=positions.reduce((a,p)=>a+p.stake,0);
+  document.getElementById("stakedBal").textContent=s.toLocaleString();
+  document.getElementById("posCount").textContent=positions.length;
+  updateHeroStats(); renderPositions();
+  toast(`[SIM] ${stake} HCX staked ${sideStr} on ${pos.event}/${pos.location}`,"ok");
+  setTimeout(()=>resolveSimPosition(pos.id), 8000+Math.random()*4000);
 }
 
-function resolvePosition(id){
-  const pos = positions.find(p=>p.id===id);
-  if(!pos || pos.status !== "open") return;
-  const won = Math.random() > 0.45;
-  pos.status = won ? "won" : "lost";
+function addLocalPosition(marketId, sideStr, stake){
+  const pos = {
+    id: Date.now(), marketId,
+    event: `Market #${marketId}`, location:"",
+    stake, side: sideStr, status:"open", ts:new Date()
+  };
+  positions.unshift(pos);
+  document.getElementById("posCount").textContent=positions.length;
+  globalStats.tvl += stake*CONFIG.HCX_PRICE_USD;
+  updateHeroStats(); renderPositions();
+  document.getElementById("claimBtn").disabled=false;
+  document.getElementById("claimBtn").style.opacity="1";
+}
+
+function resolveSimPosition(id){
+  const pos=positions.find(p=>p.id===id);
+  if(!pos||pos.status!=="open") return;
+  const won=Math.random()>.45;
+  pos.status=won?"won":"lost";
   if(won){
-    const earned = parseInt(document.getElementById("earnedBal").textContent||0) + Math.round(pos.stake*1.8);
-    document.getElementById("earnedBal").textContent = earned.toLocaleString();
-    toast(`🎉 Position resolved: WON +${Math.round(pos.stake*1.8)} HCX`, "ok", 5000);
+    const e=parseInt(document.getElementById("earnedBal").textContent.replace(/,/g,"")||0)+Math.round(pos.stake*1.8);
+    document.getElementById("earnedBal").textContent=e.toLocaleString();
+    toast(`🎉 [SIM] Won +${Math.round(pos.stake*1.8)} HCX on ${pos.event}`,"ok",5000);
   } else {
-    toast(`Position resolved: lost ${pos.stake} HCX on ${pos.event}`, "err", 4000);
+    toast(`[SIM] Lost ${pos.stake} HCX on ${pos.event}`,"err",4000);
   }
   renderPositions();
 }
 
-// ── Render positions ─────────────────────────────────────────────
+// ── Claim rewards (on-chain) ──────────────────────────────────────
+async function claimRewards(){
+  if(!onChainMode){toast("On-chain mode required to claim.","info");return;}
+  const claimable = positions.filter(p=>p.status==="open"&&p.marketId>0);
+  if(!claimable.length){toast("No claimable positions found.","info");return;}
+  for(const pos of claimable){
+    try {
+      const tx = await marketContract.claimReward(pos.marketId);
+      logTx(`Claiming market #${pos.marketId}...`, tx.hash);
+      await tx.wait();
+      pos.status="claimed";
+      logTx(`✅ Reward claimed #${pos.marketId}`, tx.hash, true);
+    } catch(e){
+      logTx(`❌ Claim failed #${pos.marketId}`, null, false, true);
+    }
+  }
+  renderPositions();
+  await refreshBalance();
+}
+
+// ── Render positions ──────────────────────────────────────────────
 function renderPositions(){
-  const el = document.getElementById("positions");
-  if(!positions.length){ el.innerHTML=`<div class="empty-state">No open positions yet.</div>`; return; }
-  el.innerHTML = positions.map(p=>`
+  const el=document.getElementById("positions");
+  if(!positions.length){el.innerHTML=`<div class="empty-state">No open positions yet.</div>`;return;}
+  el.innerHTML=positions.map(p=>`
     <div class="pos-item">
-      <div>
-        <div class="pos-event">${p.event} · ${p.side}</div>
-        <div class="pos-loc">${p.location} · ${p.timeframe} · ${p.confidence}% conf.</div>
-      </div>
+      <div><div class="pos-event">${p.event} · ${p.side}</div><div class="pos-loc">${p.location||""} ${p.timeframe||""} ${p.confidence?p.confidence+"% conf":""}</div></div>
       <div style="text-align:right">
         <div class="pos-stake">${p.stake} HCX</div>
-        <div class="pos-status pos-${p.status}">${p.status === "open" ? "⏳ Open" : p.status === "won" ? "✅ Won" : "❌ Lost"}</div>
+        <div class="pos-${p.status==="open"?"open":p.status==="won"||p.status==="claimed"?"won":"lost"}">${p.status==="open"?"⏳ Open":p.status==="won"||p.status==="claimed"?"✅ Won":"❌ Lost"}</div>
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
+}
+
+// ── Tx log ────────────────────────────────────────────────────────
+function logTx(msg, hash, ok=false, err=false){
+  const el=document.getElementById("txLog");
+  const empty=el.querySelector(".empty-state");
+  if(empty) empty.remove();
+  const link=hash?`<a href="https://polygonscan.com/tx/${hash}" target="_blank">${hash.slice(0,14)}...</a>`:"";
+  const div=document.createElement("div");
+  div.className=`tx-row${ok?" tx-ok":""}${err?" tx-err":""}`;
+  div.innerHTML=`${new Date().toLocaleTimeString()} ${msg} ${link}`;
+  el.prepend(div);
+  while(el.children.length>20) el.removeChild(el.lastChild);
 }
 
 // ── Market feed ───────────────────────────────────────────────────
 function addToFeed(pred, stake){
-  const el = document.getElementById("marketFeed");
-  const empty = el.querySelector(".empty-state");
+  const el=document.getElementById("marketFeed");
+  const empty=el.querySelector(".empty-state");
   if(empty) empty.remove();
-
-  const bull = pred.confidence > 50;
-  const ts = new Date().toLocaleTimeString();
-  const div = document.createElement("div");
-  div.className = `feed-item ${bull?"bull":"bear"}`;
-  div.innerHTML = `
-    <div class="fi-left">
-      <div class="fi-event">${pred.eventType} ${bull?"📈":"📉"}</div>
-      <div class="fi-loc">📍 ${pred.location} · ${pred.timeframe}</div>
-      <div class="fi-time">${ts}</div>
-    </div>
-    <div class="fi-right">
-      <div class="fi-conf ${bull?"":"" }" style="color:${pred.confidence>70?"#ef4444":pred.confidence>40?"#f59e0b":"#22c55e"}">${pred.confidence}%</div>
-      <div class="fi-stake">${stake ? stake+" HCX" : "—"}</div>
-    </div>
-  `;
+  const bull=pred.confidence>50;
+  const bc=pred.confidence>70?"#ef4444":pred.confidence>40?"#f59e0b":"#22c55e";
+  const div=document.createElement("div");
+  div.className=`feed-item ${bull?"bull":"bear"}`;
+  div.innerHTML=`
+    <div><div class="fi-event">${pred.eventType} ${bull?"📈":"📉"}</div><div class="fi-loc">📍 ${pred.location} · ${pred.timeframe}</div><div class="fi-time">${new Date().toLocaleTimeString()}</div></div>
+    <div style="text-align:right"><div class="fi-conf" style="color:${bc}">${pred.confidence}%</div><div class="fi-stake">${stake?stake+" HCX":"—"}</div></div>`;
   el.prepend(div);
-  while(el.children.length > 20) el.removeChild(el.lastChild);
+  while(el.children.length>20) el.removeChild(el.lastChild);
 }
 
 // ── Hero stats ────────────────────────────────────────────────────
 function updateHeroStats(){
-  document.getElementById("tvl").textContent = "$" + globalStats.tvl.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",");
-  document.getElementById("totalPreds").textContent = globalStats.preds;
-  document.getElementById("activeMkts").textContent = globalStats.markets;
-  document.getElementById("accuracy").textContent = "92.6%";
+  document.getElementById("tvl").textContent="$"+globalStats.tvl.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,",");
+  document.getElementById("totalPreds").textContent=globalStats.preds;
+  document.getElementById("activeMkts").textContent=globalStats.markets;
 }
 
 // ── Portfolio chart ───────────────────────────────────────────────
 function renderChart(){
-  const bars = document.getElementById("chartBars");
+  const bars=document.getElementById("chartBars");
   document.getElementById("chartLabel").style.display="none";
-  const heights = Array.from({length:20},()=>Math.floor(Math.random()*100)+20);
-  bars.innerHTML = heights.map((h,i)=>`
-    <div class="bar" style="height:${h}%;background:${h>80?"#38bdf8":h>50?"#7dd3fc":"#1e3a5f"}"></div>
-  `).join("");
+  bars.innerHTML=Array.from({length:22},()=>Math.floor(Math.random()*100)+20).map(h=>`<div class="bar" style="height:${h}%;background:${h>80?"#38bdf8":h>50?"#7dd3fc":"#1e3a5f"}"></div>`).join("");
 }
 
 // ── Simulated live feed ───────────────────────────────────────────
 function simulateLiveFeed(){
-  const event = FEED_EVENTS[Math.floor(Math.random()*FEED_EVENTS.length)];
-  const city  = CITIES[Math.floor(Math.random()*CITIES.length)];
-  const conf  = Math.floor(Math.random()*80)+15;
-  const stake = Math.floor(Math.random()*500)+50;
-  addToFeed({confidence:conf, eventType:event, location:city, timeframe:"48h"}, stake);
-  globalStats.preds++;
-  globalStats.tvl += stake * hcxPrice;
-  globalStats.markets = Math.min(globalStats.preds, 12);
+  addToFeed({confidence:Math.floor(Math.random()*80)+15, eventType:FEED_EVENTS[Math.floor(Math.random()*FEED_EVENTS.length)], location:CITIES[Math.floor(Math.random()*CITIES.length)], timeframe:"48h"}, Math.floor(Math.random()*500)+50);
+  globalStats.preds++; globalStats.tvl+=(Math.floor(Math.random()*500)+50)*CONFIG.HCX_PRICE_USD;
+  globalStats.markets=Math.min(globalStats.preds,12);
   updateHeroStats();
 }
 
 // Boot
 updateHeroStats();
-setInterval(simulateLiveFeed, 6000);
-setTimeout(simulateLiveFeed, 1200);
-setTimeout(simulateLiveFeed, 3000);
+setInterval(simulateLiveFeed,7000);
+setTimeout(simulateLiveFeed,1500);
+setTimeout(simulateLiveFeed,3500);
 </script>
 </body>
 </html>
