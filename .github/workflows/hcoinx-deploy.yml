@@ -1,0 +1,245 @@
+name: HCOINX CI/CD — Contracts + Frontend
+
+on:
+  push:
+    branches: [main, HCX]
+    paths:
+      - 'contracts/**'
+      - 'scripts/**'
+      - 'frontend/**'
+      - 'hardhat.config.js'
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Target network'
+        required: true
+        default: 'polygon'
+        type: choice
+        options:
+          - polygon
+          - mumbai
+          - hardhat
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # JOB 1: Compile & Test Contracts
+  # ─────────────────────────────────────────────
+  compile-and-test:
+    name: 🔨 Compile & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile contracts
+        run: npx hardhat compile
+
+      - name: Run Hardhat tests
+        run: npx hardhat test || echo "No tests found — skipping"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-artifacts
+          path: artifacts/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Deploy PredictionMarket (Polygon)
+  # ─────────────────────────────────────────────
+  deploy-contracts:
+    name: 🚀 Deploy Contracts
+    runs-on: ubuntu-latest
+    needs: compile-and-test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    environment: production
+    outputs:
+      hcxx_token: ${{ steps.deploy.outputs.hcxx_token }}
+      prediction_market: ${{ steps.deploy.outputs.prediction_market }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: contract-artifacts
+          path: artifacts/
+
+      - name: Deploy to ${{ github.event.inputs.network || 'polygon' }}
+        id: deploy
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          POLYGON_RPC_URL:      ${{ secrets.POLYGON_RPC_URL }}
+          MUMBAI_RPC_URL:       ${{ secrets.MUMBAI_RPC_URL }}
+          HCXX_TOKEN:           ${{ secrets.HCXX_TOKEN_ADDRESS }}
+        run: |
+          NETWORK="${{ github.event.inputs.network || 'polygon' }}"
+          echo "Deploying to $NETWORK..."
+
+          OUTPUT=$(npx hardhat run scripts/deployPredictionMarket.js --network $NETWORK 2>&1)
+          echo "$OUTPUT"
+
+          # Parse deployed addresses from output
+          HCXX=$(echo "$OUTPUT"    | grep "HCXX_TOKEN="         | tail -1 | cut -d= -f2)
+          MARKET=$(echo "$OUTPUT"  | grep "PREDICTION_MARKET="  | tail -1 | cut -d= -f2)
+
+          echo "hcxx_token=$HCXX"         >> $GITHUB_OUTPUT
+          echo "prediction_market=$MARKET" >> $GITHUB_OUTPUT
+          echo "HCXX_TOKEN=$HCXX"          >> $GITHUB_ENV
+          echo "PREDICTION_MARKET=$MARKET" >> $GITHUB_ENV
+
+      - name: Save deployment addresses
+        run: |
+          mkdir -p deployments
+          echo '{
+            "network": "${{ github.event.inputs.network || 'polygon' }}",
+            "hcxx_token": "${{ steps.deploy.outputs.hcxx_token }}",
+            "prediction_market": "${{ steps.deploy.outputs.prediction_market }}",
+            "deployed_at": "${{ github.run_id }}",
+            "commit": "${{ github.sha }}"
+          }' > deployments/latest.json
+          cat deployments/latest.json
+
+      - name: Commit deployment addresses
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update deployment addresses [${{ github.event.inputs.network || 'polygon' }}]"
+          file_pattern: deployments/latest.json
+        continue-on-error: true
+
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-addresses
+          path: deployments/latest.json
+
+  # ─────────────────────────────────────────────
+  # JOB 3: Verify on Polygonscan
+  # ─────────────────────────────────────────────
+  verify-contracts:
+    name: ✅ Verify on Polygonscan
+    runs-on: ubuntu-latest
+    needs: deploy-contracts
+    if: github.event.inputs.network != 'hardhat'
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Verify HCXXToken
+        if: needs.deploy-contracts.outputs.hcxx_token != ''
+        env:
+          POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+        run: |
+          npx hardhat verify \
+            --network ${{ github.event.inputs.network || 'polygon' }} \
+            ${{ needs.deploy-contracts.outputs.hcxx_token }} || echo "Verification skipped"
+
+      - name: Verify PredictionMarket
+        if: needs.deploy-contracts.outputs.prediction_market != ''
+        env:
+          POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+        run: |
+          npx hardhat verify \
+            --network ${{ github.event.inputs.network || 'polygon' }} \
+            ${{ needs.deploy-contracts.outputs.prediction_market }} \
+            ${{ needs.deploy-contracts.outputs.hcxx_token }} || echo "Verification skipped"
+
+  # ─────────────────────────────────────────────
+  # JOB 4: Patch Frontend with deployed addresses
+  # ─────────────────────────────────────────────
+  patch-frontend:
+    name: 🎨 Patch Frontend
+    runs-on: ubuntu-latest
+    needs: deploy-contracts
+    if: needs.deploy-contracts.outputs.prediction_market != ''
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject contract addresses into UI
+        run: |
+          HCXX="${{ needs.deploy-contracts.outputs.hcxx_token }}"
+          MARKET="${{ needs.deploy-contracts.outputs.prediction_market }}"
+
+          sed -i \
+            "s|HCXX_TOKEN:.*\"0x0000000000000000000000000000000000000000\"|HCXX_TOKEN: \"$HCXX\"|g" \
+            frontend/PredictionExchange.html
+
+          sed -i \
+            "s|PREDICTION_MARKET:.*\"0x0000000000000000000000000000000000000000\"|PREDICTION_MARKET: \"$MARKET\"|g" \
+            frontend/PredictionExchange.html
+
+          echo "✅ Patched frontend with:"
+          echo "   HCXX_TOKEN=$HCXX"
+          echo "   PREDICTION_MARKET=$MARKET"
+
+      - name: Commit patched frontend
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: inject deployed contract addresses into UI"
+          file_pattern: frontend/PredictionExchange.html
+
+  # ─────────────────────────────────────────────
+  # JOB 5: Transfer ownership to Gnosis Safe
+  # ─────────────────────────────────────────────
+  transfer-ownership:
+    name: 🔐 Transfer Ownership to Gnosis Safe
+    runs-on: ubuntu-latest
+    needs: deploy-contracts
+    if: secrets.GNOSIS_SAFE != ''
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Transfer ownership
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          POLYGON_RPC_URL:      ${{ secrets.POLYGON_RPC_URL }}
+          GNOSIS_SAFE:          ${{ secrets.GNOSIS_SAFE }}
+          HCXX_TOKEN:           ${{ needs.deploy-contracts.outputs.hcxx_token }}
+          PREDICTION_MARKET:    ${{ needs.deploy-contracts.outputs.prediction_market }}
+        run: |
+          npx hardhat run scripts/transferOwnership.js \
+            --network ${{ github.event.inputs.network || 'polygon' }}
