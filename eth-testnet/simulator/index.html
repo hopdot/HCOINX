@@ -6,206 +6,338 @@
   <title>HCOINX Mesh Node Simulator</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
-    body { font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 20px; }
-    h2  { color: #58a6ff; }
-    #log { background: #161b22; border: 1px solid #30363d; padding: 12px; height: 380px;
-           overflow-y: auto; font-size: 13px; border-radius: 6px; }
-    .ok   { color: #3fb950; }
-    .err  { color: #f85149; }
-    .info { color: #d29922; }
-    .peer { color: #79c0ff; }
-    button { background: #238636; color: #fff; border: none; padding: 8px 18px;
-             border-radius: 6px; cursor: pointer; margin: 4px; font-size: 14px; }
-    button:hover { background: #2ea043; }
-    button.red { background: #da3633; }
-    button.red:hover { background: #b62324; }
-    input { background: #161b22; color: #c9d1d9; border: 1px solid #30363d;
-            padding: 6px 10px; border-radius: 6px; }
-    label { color: #8b949e; font-size: 13px; }
-    .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px;
-             padding: 16px; margin-bottom: 14px; }
-    .row { margin-bottom: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    #status { font-size: 13px; padding: 6px 12px; border-radius: 6px;
-              background: #21262d; display: inline-block; margin-top: 8px; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:monospace;background:#0d1117;color:#c9d1d9;padding:20px;}
+    h2{color:#58a6ff;margin-bottom:12px;}
+    h3{color:#8b949e;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+
+    .layout{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-top:16px;}
+    .left{display:flex;flex-direction:column;gap:14px;}
+
+    .panel{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;}
+
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+    .row:last-child{margin-bottom:0;}
+
+    input{background:#0d1117;color:#c9d1d9;border:1px solid #30363d;padding:6px 10px;
+          border-radius:6px;font-family:monospace;font-size:13px;}
+
+    button{background:#238636;color:#fff;border:none;padding:8px 16px;border-radius:6px;
+           cursor:pointer;font-size:13px;font-family:monospace;white-space:nowrap;}
+    button:hover{background:#2ea043;}
+    button.red{background:#da3633;} button.red:hover{background:#b62324;}
+    button.blue{background:#1f6feb;} button.blue:hover{background:#388bfd;}
+
+    #log{background:#0d1117;border:1px solid #30363d;padding:12px;height:320px;
+         overflow-y:auto;font-size:12px;border-radius:6px;line-height:1.6;}
+    .ok{color:#3fb950;} .err{color:#f85149;} .info{color:#d29922;} .peer{color:#79c0ff;}
+
+    /* Status bar */
+    #statusBar{display:flex;gap:10px;align-items:center;font-size:12px;padding:8px 12px;
+               background:#161b22;border:1px solid #30363d;border-radius:6px;}
+    .dot{width:8px;height:8px;border-radius:50%;background:#3fb950;display:inline-block;}
+    .dot.off{background:#6e7681;}
+
+    /* Peer list */
+    .peer-panel{display:flex;flex-direction:column;gap:14px;}
+    #peerList{display:flex;flex-direction:column;gap:8px;min-height:60px;}
+    .peer-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;
+               padding:10px 12px;font-size:12px;display:flex;align-items:center;gap:8px;}
+    .peer-dot{width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0;}
+    .peer-name{color:#58a6ff;font-weight:bold;}
+    .peer-time{color:#6e7681;font-size:11px;margin-left:auto;}
+    .peer-empty{color:#6e7681;font-size:12px;padding:8px 0;}
+
+    /* Stats */
+    #stats{display:flex;flex-direction:column;gap:6px;font-size:12px;}
+    .stat-row{display:flex;justify-content:space-between;}
+    .stat-label{color:#6e7681;}
+    .stat-val{color:#c9d1d9;font-weight:bold;}
+
+    /* Packet feed */
+    #packetFeed{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
+    .pf-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;font-size:11px;}
+    .pf-id{color:#d29922;} .pf-src{color:#58a6ff;} .pf-data{color:#c9d1d9;} .pf-ts{color:#6e7681;}
+
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
+<div style="padding:0 0 16px 0;">
   <h2>⚡ HCOINX Mesh Node Simulator</h2>
+</div>
 
-  <div class="panel">
-    <div class="row">
-      <label>Node ID:</label>
-      <input id="nodeID" value="NODE1" style="width:90px"/>
-      <label>RPC:</label>
-      <input id="rpcUrl" value="http://127.0.0.1:8545" style="width:210px"/>
-      <label>Relay WS:</label>
-      <input id="wsUrl" value="ws://localhost:8080" style="width:180px"/>
+<!-- Status bar -->
+<div id="statusBar">
+  <span class="dot off" id="ethDot"></span> Ethereum: <span id="ethStatus" style="color:#6e7681;">disconnected</span>
+  &nbsp;|&nbsp;
+  <span class="dot off" id="wsDot"></span> Relay: <span id="wsStatus" style="color:#6e7681;">disconnected</span>
+  &nbsp;|&nbsp;
+  🟡 Node: <span id="nodeStatus" style="color:#6e7681;">—</span>
+</div>
+
+<div class="layout">
+  <!-- LEFT: Config + Log -->
+  <div class="left">
+    <div class="panel">
+      <h3>Node Configuration</h3>
+      <div class="row">
+        <label style="color:#8b949e;font-size:12px;min-width:60px;">Node ID</label>
+        <input id="nodeID" value="NODE1" style="width:90px"/>
+        <label style="color:#8b949e;font-size:12px;min-width:30px;">RPC</label>
+        <input id="rpcUrl" value="http://127.0.0.1:8545" style="flex:1"/>
+      </div>
+      <div class="row">
+        <label style="color:#8b949e;font-size:12px;min-width:60px;">Relay WS</label>
+        <input id="wsUrl" value="ws://localhost:8080" style="width:180px"/>
+        <label style="color:#8b949e;font-size:12px;min-width:60px;">Contract</label>
+        <input id="contractAddr" placeholder="0x... paste after deploy" style="flex:1"/>
+      </div>
+      <div class="row">
+        <button onclick="initNode()">🔌 Connect Node</button>
+        <button onclick="startAuto()">▶️ Auto (10s)</button>
+        <button onclick="broadcastOnce()" class="blue">📡 Send Once</button>
+        <button onclick="stopAuto()" class="red">⏹ Stop</button>
+        <button onclick="clearLog()">🗑 Clear</button>
+      </div>
     </div>
-    <div class="row">
-      <label>Contract:</label>
-      <input id="contractAddr" placeholder="0x... paste after deploy" style="width:360px"/>
+
+    <div class="panel" style="padding:12px 16px;">
+      <h3>Event Log</h3>
+      <div id="log"></div>
     </div>
-    <div class="row">
-      <button onclick="initNode()">🔌 Connect Node</button>
-      <button onclick="startAuto()">▶️ Auto-Broadcast (10s)</button>
-      <button onclick="stopAuto()" class="red">⏹ Stop</button>
-      <button onclick="clearLog()">🗑 Clear</button>
-    </div>
-    <div id="status">⚪ Not connected</div>
   </div>
 
-  <div id="log"></div>
+  <!-- RIGHT: Peer list + Stats + Packet feed -->
+  <div class="peer-panel">
 
-  <script>
-    const ABI = [
-      {
-        inputs: [
-          {internalType:"uint32",  name:"packetID", type:"uint32"},
-          {internalType:"string",  name:"deviceID", type:"string"},
-          {internalType:"string",  name:"payload",  type:"string"}
-        ],
-        name: "submitPacket", outputs: [], stateMutability: "nonpayable", type: "function"
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {indexed:false,internalType:"uint32",name:"packetID",type:"uint32"},
-          {indexed:false,internalType:"string",name:"deviceID",type:"string"},
-          {indexed:false,internalType:"string",name:"payload",type:"string"}
-        ],
-        name: "NewData", type: "event"
-      }
-    ];
+    <div class="panel">
+      <h3>🌐 Live Peers <span id="peerCount" style="color:#3fb950;font-weight:bold;"></span></h3>
+      <div id="peerList">
+        <div class="peer-empty">No peers connected yet.</div>
+      </div>
+    </div>
 
-    let provider, signer, oracle, ws;
-    let seenPackets  = new Set();
-    let autoTimer    = null;
-    let packetCounter = 1;
+    <div class="panel">
+      <h3>📊 Session Stats</h3>
+      <div id="stats">
+        <div class="stat-row"><span class="stat-label">Packets sent</span><span class="stat-val" id="statSent">0</span></div>
+        <div class="stat-row"><span class="stat-label">Packets received</span><span class="stat-val" id="statRecv">0</span></div>
+        <div class="stat-row"><span class="stat-label">Duplicates ignored</span><span class="stat-val" id="statDup">0</span></div>
+        <div class="stat-row"><span class="stat-label">On-chain confirmed</span><span class="stat-val" id="statChain">0</span></div>
+        <div class="stat-row"><span class="stat-label">Chain failures</span><span class="stat-val" id="statFail">0</span></div>
+      </div>
+    </div>
 
-    // ── Logging ──────────────────────────────────────────────────
-    function log(msg, type = "info") {
-      const el  = document.getElementById("log");
-      const ts  = new Date().toLocaleTimeString();
-      el.innerHTML += `<div class="${type}">[${ts}] ${msg}</div>`;
-      el.scrollTop  = el.scrollHeight;
-    }
-    function clearLog() { document.getElementById("log").innerHTML = ""; }
-    function setStatus(text, color = "#8b949e") {
-      const el = document.getElementById("status");
-      el.textContent = text;
-      el.style.color = color;
-    }
+    <div class="panel">
+      <h3>📦 Packet Feed</h3>
+      <div id="packetFeed"><div class="peer-empty">No packets yet.</div></div>
+    </div>
 
-    // ── Connect Ethereum + WebSocket relay ───────────────────────
-    async function initNode() {
-      const rpc  = document.getElementById("rpcUrl").value;
-      const addr = document.getElementById("contractAddr").value.trim();
-      const wsURL = document.getElementById("wsUrl").value.trim();
-      const nodeID = document.getElementById("nodeID").value.trim();
+  </div>
+</div>
 
-      if (!addr) { log("Paste a contract address first.", "err"); return; }
+<script>
+const ABI = [
+  {inputs:[{internalType:"uint32",name:"packetID",type:"uint32"},{internalType:"string",name:"deviceID",type:"string"},{internalType:"string",name:"payload",type:"string"}],name:"submitPacket",outputs:[],stateMutability:"nonpayable",type:"function"},
+  {anonymous:false,inputs:[{indexed:false,internalType:"uint32",name:"packetID",type:"uint32"},{indexed:false,internalType:"string",name:"deviceID",type:"string"},{indexed:false,internalType:"string",name:"payload",type:"string"}],name:"NewData",type:"event"}
+];
 
-      // Ethereum
-      try {
-        provider = new ethers.providers.JsonRpcProvider(rpc);
-        signer   = provider.getSigner(0);
-        oracle   = new ethers.Contract(addr, ABI, signer);
-        log(`Ethereum connected → ${rpc}`, "ok");
-        oracle.on("NewData", (packetID, deviceID, payload) => {
-          log(`📡 On-chain event: #${packetID} from ${deviceID} | ${payload}`, "info");
-        });
-      } catch(e) { log(`Ethereum failed: ${e.message}`, "err"); return; }
+let provider, signer, oracle, ws;
+let seenPackets  = new Set();
+let autoTimer    = null;
+let packetCounter = 1;
+let peers        = new Map(); // nodeID -> { lastSeen }
 
-      // WebSocket relay
-      connectRelay(wsURL, nodeID);
-    }
+// ── Stats ────────────────────────────────────────────────────────
+let stats = {sent:0, recv:0, dup:0, chain:0, fail:0};
+function updateStats(key){ stats[key]++; document.getElementById("stat"+key.charAt(0).toUpperCase()+key.slice(1)).textContent = stats[key]; }
 
-    function connectRelay(wsURL, nodeID) {
-      if (ws) ws.close();
-      try {
-        ws = new WebSocket(wsURL);
-        ws.onopen = () => {
-          ws.send(JSON.stringify({ type: "register", nodeID }));
-          log(`WebSocket relay connected → ${wsURL}`, "ok");
-          setStatus(`🟢 ${nodeID} connected`, "#3fb950");
-        };
-        ws.onmessage = (evt) => {
-          const msg = JSON.parse(evt.data);
-          if (msg.type === "info") { log(`ℹ️  ${msg.text}`, "peer"); return; }
-          if (msg.type === "packet") {
-            log(`📶 Mesh packet from ${msg.packet.senderID}: "${msg.packet.payload}" (TTL=${msg.packet.TTL})`, "peer");
-            processMeshPacket(msg.packet, false); // received — don't relay back
-          }
-        };
-        ws.onclose = () => { log("WebSocket relay disconnected.", "err"); setStatus("🔴 Disconnected", "#f85149"); };
-        ws.onerror = () => { log("WebSocket error.", "err"); };
-      } catch(e) { log(`WS failed: ${e.message}`, "err"); }
-    }
+// ── Logging ──────────────────────────────────────────────────────
+function log(msg, type="info"){
+  const el=document.getElementById("log");
+  const ts=new Date().toLocaleTimeString();
+  el.innerHTML+=`<div class="${type}">[${ts}] ${msg}</div>`;
+  el.scrollTop=el.scrollHeight;
+}
+function clearLog(){ document.getElementById("log").innerHTML=""; }
 
-    // ── Mesh packet processing ───────────────────────────────────
-    async function processMeshPacket(packet, relay = true) {
-      if (seenPackets.has(packet.packetID)) {
-        log(`⚠️ Duplicate #${packet.packetID} ignored`, "info");
+// ── Status bar ───────────────────────────────────────────────────
+function setEthStatus(ok){
+  document.getElementById("ethDot").className="dot"+(ok?"":" off");
+  document.getElementById("ethStatus").style.color=ok?"#3fb950":"#6e7681";
+  document.getElementById("ethStatus").textContent=ok?"connected":"disconnected";
+}
+function setWsStatus(ok){
+  document.getElementById("wsDot").className="dot"+(ok?"":" off");
+  document.getElementById("wsStatus").style.color=ok?"#3fb950":"#6e7681";
+  document.getElementById("wsStatus").textContent=ok?"connected":"disconnected";
+}
+function setNodeStatus(id){
+  document.getElementById("nodeStatus").textContent=id||"—";
+  document.getElementById("nodeStatus").style.color=id?"#58a6ff":"#6e7681";
+}
+
+// ── Peer list ────────────────────────────────────────────────────
+function addPeer(nodeID){
+  peers.set(nodeID, { lastSeen: new Date() });
+  renderPeers();
+}
+function removePeer(nodeID){
+  peers.delete(nodeID);
+  renderPeers();
+}
+function renderPeers(){
+  const el = document.getElementById("peerList");
+  document.getElementById("peerCount").textContent = peers.size ? `(${peers.size})` : "";
+  if(peers.size === 0){
+    el.innerHTML=`<div class="peer-empty">No peers connected yet.</div>`;
+    return;
+  }
+  el.innerHTML="";
+  for(const [id, info] of peers){
+    const ts = info.lastSeen.toLocaleTimeString();
+    el.innerHTML+=`<div class="peer-item"><span class="peer-dot"></span><span class="peer-name">${id}</span><span class="peer-time">${ts}</span></div>`;
+  }
+}
+
+// ── Packet feed ───────────────────────────────────────────────────
+function addToFeed(packet, direction){
+  const el = document.getElementById("packetFeed");
+  // Remove empty state
+  const empty = el.querySelector(".peer-empty");
+  if(empty) empty.remove();
+
+  const arrow = direction==="out" ? "↑ sent" : "↓ recv";
+  const color  = direction==="out" ? "#3fb950" : "#79c0ff";
+  const ts = new Date().toLocaleTimeString();
+  const div = document.createElement("div");
+  div.className="pf-item";
+  div.innerHTML=`<span style="color:${color}">${arrow}</span> <span class="pf-id">#${packet.packetID}</span> <span class="pf-src">${packet.senderID}</span> <span class="pf-data">${packet.payload}</span> <span class="pf-ts">${ts}</span>`;
+  el.prepend(div);
+  // Keep max 50
+  while(el.children.length > 50) el.removeChild(el.lastChild);
+}
+
+// ── Connect Ethereum + relay ──────────────────────────────────────
+async function initNode(){
+  const rpc     = document.getElementById("rpcUrl").value;
+  const addr    = document.getElementById("contractAddr").value.trim();
+  const wsURL   = document.getElementById("wsUrl").value.trim();
+  const nodeID  = document.getElementById("nodeID").value.trim();
+  if(!addr){ log("Paste a contract address first.", "err"); return; }
+
+  try {
+    provider = new ethers.providers.JsonRpcProvider(rpc);
+    signer   = provider.getSigner(0);
+    oracle   = new ethers.Contract(addr, ABI, signer);
+    setEthStatus(true);
+    log(`Ethereum connected → ${rpc}`, "ok");
+    oracle.on("NewData",(packetID,deviceID,payload)=>{
+      log(`📡 On-chain: #${packetID} from ${deviceID} | ${payload}`, "info");
+    });
+  } catch(e){ log(`Ethereum failed: ${e.message}`, "err"); return; }
+
+  connectRelay(wsURL, nodeID);
+  setNodeStatus(nodeID);
+}
+
+function connectRelay(wsURL, nodeID){
+  if(ws) ws.close();
+  try {
+    ws = new WebSocket(wsURL);
+    ws.onopen = ()=>{
+      ws.send(JSON.stringify({type:"register", nodeID}));
+      setWsStatus(true);
+      log(`Relay connected → ${wsURL}`, "ok");
+    };
+    ws.onmessage = (evt)=>{
+      const msg = JSON.parse(evt.data);
+      if(msg.type === "info"){
+        // Parse join/leave events
+        const joined = msg.text.match(/^(.+) joined/);
+        const left   = msg.text.match(/^(.+) left/);
+        if(joined && joined[1] !== nodeID) addPeer(joined[1]);
+        if(left   && left[1]   !== nodeID) removePeer(left[1]);
+        log(`ℹ️  ${msg.text}`, "peer");
         return;
       }
-      seenPackets.add(packet.packetID);
-
-      if (relay && ws && ws.readyState === WebSocket.OPEN) {
-        if (packet.TTL > 1) {
-          packet.TTL--;
-          log(`🔁 Relaying to peers (TTL=${packet.TTL})`, "info");
-          ws.send(JSON.stringify({ type: "packet", packet }));
-        }
+      if(msg.type === "peers"){
+        // Full peer list sync
+        peers.clear();
+        (msg.list||[]).forEach(id=>{ if(id!==nodeID) peers.set(id,{lastSeen:new Date()}); });
+        renderPeers();
+        return;
       }
-
-      await submitToEthereum(packet);
-    }
-
-    // ── Ethereum submit ──────────────────────────────────────────
-    async function submitToEthereum(packet) {
-      if (!oracle) { log("Oracle not connected.", "err"); return; }
-      try {
-        log(`⛓  Submitting #${packet.packetID} to chain...`, "info");
-        const tx = await oracle.submitPacket(packet.packetID, packet.senderID, packet.payload);
-        await tx.wait();
-        log(`✅ #${packet.packetID} confirmed | TX: ${tx.hash.slice(0,20)}...`, "ok");
-      } catch(e) {
-        log(`❌ Submit failed #${packet.packetID}: ${e.message}`, "err");
+      if(msg.type === "packet"){
+        updateStats("recv");
+        addToFeed(msg.packet, "in");
+        log(`📶 From ${msg.packet.senderID}: "${msg.packet.payload}" TTL=${msg.packet.TTL}`, "peer");
+        processMeshPacket(msg.packet, false);
       }
-    }
+    };
+    ws.onclose = ()=>{ setWsStatus(false); log("Relay disconnected.", "err"); peers.clear(); renderPeers(); };
+    ws.onerror = ()=>{ log("WebSocket error.", "err"); };
+  } catch(e){ log(`WS failed: ${e.message}`, "err"); }
+}
 
-    // ── Sensor data generator ────────────────────────────────────
-    function generateReading() {
-      const nodeID = document.getElementById("nodeID").value.trim();
-      const dist   = (Math.random() * 400 + 10).toFixed(1);
-      const temp   = (Math.random() * 15  + 20).toFixed(1);
-      return {
-        packetID: packetCounter++,
-        senderID: nodeID,
-        payload:  `dist:${dist}cm,temp:${temp}C`,
-        TTL: 3
-      };
-    }
+// ── Mesh processing ───────────────────────────────────────────────
+async function processMeshPacket(packet, relay=true){
+  if(seenPackets.has(packet.packetID)){ updateStats("dup"); log(`⚠️ Dup #${packet.packetID} ignored`,"info"); return; }
+  seenPackets.add(packet.packetID);
+  if(relay && ws && ws.readyState===WebSocket.OPEN && packet.TTL > 1){
+    packet.TTL--;
+    log(`🔁 Relaying TTL=${packet.TTL}`, "info");
+    ws.send(JSON.stringify({type:"packet", packet}));
+  }
+  await submitToEthereum(packet);
+}
 
-    async function broadcastOnce() {
-      if (!oracle) { log("Connect node first.", "err"); return; }
-      const packet = generateReading();
-      log(`📡 Broadcasting: ${packet.payload}`, "info");
-      await processMeshPacket(packet, true);
-    }
+async function submitToEthereum(packet){
+  if(!oracle){ log("Oracle not connected.","err"); return; }
+  try {
+    log(`⛓  Submitting #${packet.packetID}...`, "info");
+    const tx = await oracle.submitPacket(packet.packetID, packet.senderID, packet.payload);
+    await tx.wait();
+    updateStats("chain");
+    log(`✅ #${packet.packetID} confirmed | ${tx.hash.slice(0,20)}...`, "ok");
+  } catch(e){
+    updateStats("fail");
+    log(`❌ #${packet.packetID} failed: ${e.message}`, "err");
+  }
+}
 
-    function startAuto() {
-      if (!oracle) { log("Connect node first.", "err"); return; }
-      if (autoTimer) return;
-      log("▶️ Auto-broadcast started (10s interval)", "ok");
-      broadcastOnce();
-      autoTimer = setInterval(broadcastOnce, 10000);
-    }
+// ── Generator ─────────────────────────────────────────────────────
+function generateReading(){
+  const nodeID = document.getElementById("nodeID").value.trim();
+  return {
+    packetID: packetCounter++,
+    senderID: nodeID,
+    payload:  `dist:${(Math.random()*400+10).toFixed(1)}cm,temp:${(Math.random()*15+20).toFixed(1)}C`,
+    TTL: 3
+  };
+}
 
-    function stopAuto() {
-      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-      log("⏹ Auto-broadcast stopped.", "info");
-    }
-  </script>
+async function broadcastOnce(){
+  if(!oracle){ log("Connect node first.","err"); return; }
+  const packet = generateReading();
+  updateStats("sent");
+  addToFeed(packet, "out");
+  log(`📡 Broadcasting: ${packet.payload}`, "info");
+  await processMeshPacket(packet, true);
+}
+
+function startAuto(){
+  if(!oracle){ log("Connect node first.","err"); return; }
+  if(autoTimer) return;
+  log("▶️ Auto-broadcast started (10s)", "ok");
+  broadcastOnce();
+  autoTimer = setInterval(broadcastOnce, 10000);
+}
+function stopAuto(){
+  if(autoTimer){ clearInterval(autoTimer); autoTimer=null; }
+  log("⏹ Stopped.", "info");
+}
+</script>
 </body>
 </html>
