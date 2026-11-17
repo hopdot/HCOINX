@@ -1,0 +1,37 @@
+services:
+  - type: worker
+    name: hcoinx-slack-ops
+    runtime: docker
+    rootDir: integrations/terrebonne-registry-slack
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: false
+    envVars:
+      - key: SLACK_BOT_TOKEN
+        sync: false
+      - key: SLACK_APP_TOKEN
+        sync: false
+      - key: SLACK_SIGNING_SECRET
+        sync: false
+      - key: REGISTRY_API_BASE_URL
+        sync: false
+      - key: REGISTRY_API_TOKEN
+        sync: false
+      - key: DIGEST_CHANNEL_ID
+        sync: false
+      - key: SLACK_ALLOWED_CHANNEL_IDS
+        sync: false
+      - key: TIMEZONE
+        value: America/Chicago
+      - key: DIGEST_HOUR
+        value: "8"
+  - type: web
+    name: hcoinx-registry-dashboard
+    runtime: static
+    rootDir: integrations/terrebonne-registry-slack
+    staticPublishPath: ./dashboard
+    buildCommand: ""
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
