@@ -1,0 +1,46 @@
+{
+  "display_information": {
+    "name": "HCOINX Operations",
+    "description": "HCOINX operations commands and Terrebonne registry summaries.",
+    "background_color": "#14233b"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "HCOINX Ops",
+      "always_online": false
+    },
+    "slash_commands": [
+      {
+        "command": "/hcoinx",
+        "description": "HCOINX operations center commands",
+        "usage_hint": "help | status | registry report",
+        "should_escape": false
+      },
+      {
+        "command": "/registry",
+        "description": "Terrebonne public school and bus register",
+        "usage_hint": "schools | buses | report",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "commands",
+        "chat:write",
+        "app_mentions:read"
+      ]
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "bot_events": [
+        "app_mention"
+      ]
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": true,
+    "token_rotation_enabled": false
+  }
+}
