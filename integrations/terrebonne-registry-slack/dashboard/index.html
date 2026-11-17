@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terrebonne Registry Operations</title>
+<style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color:#172033;background:#f3f6fb}body{margin:0}.top{background:#101d35;color:white;padding:26px max(22px,calc((100% - 1120px)/2))}main{max-width:1120px;margin:28px auto;padding:0 18px}.muted{color:#64748b}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.card{background:white;border:1px solid #e1e8f0;border-radius:14px;padding:20px;box-shadow:0 4px 16px #152b4d0b}.kpi{font-size:32px;font-weight:750;margin:8px 0}.status{display:inline-block;padding:5px 10px;border-radius:20px;background:#fff2d6;color:#825500;font-size:12px}button{background:#155eef;color:white;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}input{padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:min(520px,90%)}pre{white-space:pre-wrap;overflow-wrap:anywhere}.wide{margin-top:16px}
+</style></head><body>
+<header class="top"><h1>Terrebonne Parish Registry</h1><div>HCOINX Operations Center · School & Bus Register</div></header>
+<main><p><span class="status" id="state">Not connected — configuration required</span></p>
+<section class="grid">
+<div class="card"><div class="muted">Public school records</div><div class="kpi" id="schools">—</div><div class="muted">Configured public endpoint</div></div>
+<div class="card"><div class="muted">Public bus-route records</div><div class="kpi" id="buses">—</div><div class="muted">Configured public endpoint</div></div>
+<div class="card"><div class="muted">API status</div><div class="kpi" id="api">Unknown</div><div class="muted">Connection check</div></div>
+<div class="card"><div class="muted">Privacy mode</div><div class="kpi">On</div><div class="muted">Student-level fields excluded</div></div></section>
+<section class="card wide"><h2>Connect registry API</h2><p class="muted">Enter public HTTPS endpoints only. Do not paste API secrets into this browser page.</p>
+<p><input id="base" placeholder="https://your-registry-api.example.org"></p><p><input id="schoolPath" value="/api/public/schools" aria-label="Schools endpoint"></p><p><input id="busPath" value="/api/public/buses" aria-label="Buses endpoint"></p><button onclick="loadRegistry()">Connect and refresh</button></section>
+<section class="card wide"><h2>Public school register</h2><pre id="schoolRows" class="muted">Waiting for configuration.</pre></section>
+<section class="card wide"><h2>Public bus register</h2><pre id="busRows" class="muted">Waiting for configuration.</pre></section>
+<section class="card wide"><h2>Operational notes</h2><p class="muted">Request tracking and Slack commands run through the server-side adapter. Verify API paths and public fields against the registry OpenAPI schema before production use. Never expose student names, IDs, dates of birth, home addresses, attendance, or individual bus assignments.</p></section>
+</main>
+<script>
+async function loadRegistry(){
+ const base=document.getElementById('base').value.trim().replace(/\/$/,'');
+ const sp=document.getElementById('schoolPath').value.trim(),bp=document.getElementById('busPath').value.trim();
+ if(!/^https:\/\//i.test(base)){alert('Use an HTTPS public API base URL.');return}
+ const state=document.getElementById('state');state.textContent='Connecting…';
+ async function get(path){const r=await fetch(base+path,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+ try{
+  const [s,b]=await Promise.all([get(sp),get(bp)]);
+  const rows=x=>Array.isArray(x)?x:(x.items||x.results||[]);
+  const safe=(arr,kind)=>arr.slice(0,100).map(o=>kind==='schools'?{id:o.id,name:o.name,type:o.school_type,city:o.city,status:o.status}:{route_id:o.route_id,route_name:o.route_name,service_area:o.service_area,status:o.status});
+  const sr=safe(rows(s),'schools'),br=safe(rows(b),'buses');
+  document.getElementById('schools').textContent=rows(s).length;document.getElementById('buses').textContent=rows(b).length;document.getElementById('api').textContent='Online';
+  document.getElementById('schoolRows').textContent=JSON.stringify(sr,null,2);document.getElementById('busRows').textContent=JSON.stringify(br,null,2);state.textContent='Connected to configured public endpoints';
+ }catch(e){document.getElementById('api').textContent='Error';state.textContent='Connection failed: '+e.message}
+}
+</script></body></html>
