@@ -1,0 +1,36 @@
+name: HCOINX Slack Operations Validation
+
+on:
+  push:
+    branches:
+      - HCX
+      - feature/hcoinx-slack-operations
+    paths:
+      - "integrations/terrebonne-registry-slack/**"
+      - ".github/workflows/hcoinx-slack-ops.yml"
+  pull_request:
+    paths:
+      - "integrations/terrebonne-registry-slack/**"
+      - ".github/workflows/hcoinx-slack-ops.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r integrations/terrebonne-registry-slack/requirements.txt
+      - name: Compile Python source
+        run: python -m compileall -q integrations/terrebonne-registry-slack/app.py
+      - name: Validate Slack app manifest
+        run: python -c "import json; json.load(open('integrations/terrebonne-registry-slack/slack-app-manifest.json', encoding='utf-8'))"
