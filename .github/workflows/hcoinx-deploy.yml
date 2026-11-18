@@ -160,8 +160,15 @@ jobs:
           NETWORK="${{ github.event.inputs.network || 'polygon' }}"
           echo "Deploying to $NETWORK..."
 
+          set +e
           OUTPUT=$(npx hardhat run scripts/deployPredictionMarket.js --network $NETWORK 2>&1)
+          STATUS=$?
+          set -e
           echo "$OUTPUT"
+          if [ $STATUS -ne 0 ]; then
+            echo "::error::hardhat run failed with exit code $STATUS — see output above"
+            exit $STATUS
+          fi
 
           # Parse deployed addresses from output
           HCXX=$(echo "$OUTPUT"    | grep "HCXX_TOKEN="         | tail -1 | cut -d= -f2)
