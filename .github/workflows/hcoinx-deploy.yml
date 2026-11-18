@@ -40,17 +40,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install contract toolchain
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
-          else
-            npm install --no-audit --no-fund --ignore-scripts
-          fi
-          # --ignore-scripts skips native node-gyp builds. The pinned
-          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
-          # out to a Python 2 print statement and fails on Python 3 runners.
-          # The JavaScript fallback is used instead.
+          # The repository root is a legacy Copay wallet app whose dependency
+          # tree is unrelated to the contracts, and its native modules
+          # (secp256k1, node-sass) cannot build on current runners. Install only
+          # the Hardhat toolchain, in an isolated manifest, so `npx hardhat`
+          # resolves a local Hardhat 2.x instead of downloading Hardhat 3.
+          mkdir -p /tmp/legacy-manifest
+          mv package.json package-lock.json /tmp/legacy-manifest/ 2>/dev/null || true
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps \
+            hardhat@2.22.17 @nomicfoundation/hardhat-toolbox@5.0.0 dotenv@16.4.5
 
       - name: Compile contracts
         run: npx hardhat compile
@@ -87,17 +88,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install contract toolchain
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
-          else
-            npm install --no-audit --no-fund --ignore-scripts
-          fi
-          # --ignore-scripts skips native node-gyp builds. The pinned
-          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
-          # out to a Python 2 print statement and fails on Python 3 runners.
-          # The JavaScript fallback is used instead.
+          # The repository root is a legacy Copay wallet app whose dependency
+          # tree is unrelated to the contracts, and its native modules
+          # (secp256k1, node-sass) cannot build on current runners. Install only
+          # the Hardhat toolchain, in an isolated manifest, so `npx hardhat`
+          # resolves a local Hardhat 2.x instead of downloading Hardhat 3.
+          mkdir -p /tmp/legacy-manifest
+          mv package.json package-lock.json /tmp/legacy-manifest/ 2>/dev/null || true
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps \
+            hardhat@2.22.17 @nomicfoundation/hardhat-toolbox@5.0.0 dotenv@16.4.5
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -172,17 +174,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install contract toolchain
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
-          else
-            npm install --no-audit --no-fund --ignore-scripts
-          fi
-          # --ignore-scripts skips native node-gyp builds. The pinned
-          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
-          # out to a Python 2 print statement and fails on Python 3 runners.
-          # The JavaScript fallback is used instead.
+          # The repository root is a legacy Copay wallet app whose dependency
+          # tree is unrelated to the contracts, and its native modules
+          # (secp256k1, node-sass) cannot build on current runners. Install only
+          # the Hardhat toolchain, in an isolated manifest, so `npx hardhat`
+          # resolves a local Hardhat 2.x instead of downloading Hardhat 3.
+          mkdir -p /tmp/legacy-manifest
+          mv package.json package-lock.json /tmp/legacy-manifest/ 2>/dev/null || true
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps \
+            hardhat@2.22.17 @nomicfoundation/hardhat-toolbox@5.0.0 dotenv@16.4.5
 
       - name: Verify HCXXToken
         if: needs.deploy-contracts.outputs.hcxx_token != ''
@@ -283,17 +286,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install contract toolchain
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
-          else
-            npm install --no-audit --no-fund --ignore-scripts
-          fi
-          # --ignore-scripts skips native node-gyp builds. The pinned
-          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
-          # out to a Python 2 print statement and fails on Python 3 runners.
-          # The JavaScript fallback is used instead.
+          # The repository root is a legacy Copay wallet app whose dependency
+          # tree is unrelated to the contracts, and its native modules
+          # (secp256k1, node-sass) cannot build on current runners. Install only
+          # the Hardhat toolchain, in an isolated manifest, so `npx hardhat`
+          # resolves a local Hardhat 2.x instead of downloading Hardhat 3.
+          mkdir -p /tmp/legacy-manifest
+          mv package.json package-lock.json /tmp/legacy-manifest/ 2>/dev/null || true
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps \
+            hardhat@2.22.17 @nomicfoundation/hardhat-toolbox@5.0.0 dotenv@16.4.5
 
       - name: Transfer ownership
         env:
