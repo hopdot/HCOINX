@@ -41,7 +41,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
+          else
+            npm install --no-audit --no-fund --ignore-scripts
+          fi
+          # --ignore-scripts skips native node-gyp builds. The pinned
+          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
+          # out to a Python 2 print statement and fails on Python 3 runners.
+          # The JavaScript fallback is used instead.
 
       - name: Compile contracts
         run: npx hardhat compile
@@ -79,7 +88,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
+          else
+            npm install --no-audit --no-fund --ignore-scripts
+          fi
+          # --ignore-scripts skips native node-gyp builds. The pinned
+          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
+          # out to a Python 2 print statement and fails on Python 3 runners.
+          # The JavaScript fallback is used instead.
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -155,7 +173,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
+          else
+            npm install --no-audit --no-fund --ignore-scripts
+          fi
+          # --ignore-scripts skips native node-gyp builds. The pinned
+          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
+          # out to a Python 2 print statement and fails on Python 3 runners.
+          # The JavaScript fallback is used instead.
 
       - name: Verify HCXXToken
         if: needs.deploy-contracts.outputs.hcxx_token != ''
@@ -257,7 +284,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts
+          else
+            npm install --no-audit --no-fund --ignore-scripts
+          fi
+          # --ignore-scripts skips native node-gyp builds. The pinned
+          # secp256k1 3.x binding builds through node-gyp 3.8, which shells
+          # out to a Python 2 print statement and fails on Python 3 runners.
+          # The JavaScript fallback is used instead.
 
       - name: Transfer ownership
         env:
